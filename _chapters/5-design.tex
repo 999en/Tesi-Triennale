@@ -1,0 +1,177 @@
+\chapter{Ipotesi e criteri di falsificazione}\label{chap:hypotheses}
+
+
+\noindent Questo capitolo documenta il processo che ha condotto dalle osservazioni iniziali alla
+formulazione delle ipotesi. La sua inclusione risponde a una ragione metodologica: il lavoro non è
+consistito nell'applicare una tecnica nota a un sistema noto, ma nel ricostruire il comportamento
+di un sistema di cui non erano disponibili i sorgenti. Le ipotesi hanno quindi svolto una funzione
+euristica, e la loro falsificazione è parte del risultato. Il capitolo ricostruisce il processo di
+analisi, enuncia le ipotesi primarie con la loro derivazione e il criterio di falsificazione ---
+senza anticiparne l'esito, che è discusso insieme ai risultati --- e raccoglie separatamente le
+domande esplorative. Il protocollo di verifica e la metodologia statistica, che delle ipotesi
+costituiscono il banco di prova, sono esposti nel capitolo sulla valutazione sperimentale.
+
+% =======================================================================================
+\section{Come sono nate le ipotesi}\label{sec:analysis-process}
+
+L'analisi si è svolta in quattro passi, ciascuno dei quali ha determinato il successivo.
+
+\begin{enumerate}[leftmargin=1.6em]
+    \item \textbf{Disassemblaggio.} Il sistema è distribuito senza sorgenti. La ricostruzione
+    della logica è avvenuta per disassemblaggio del bytecode, con particolare attenzione alle
+    procedure che consumano l'insieme delle regole.
+    \item \textbf{Individuazione del doppio ruolo.} È emerso che una RFD partecipa a due
+    procedure con requisiti opposti (\autoref{sec:dual-role}). Questa osservazione ha trasformato
+    il problema da ``selezionare le regole utili'' a ``selezionare le regole utili sapendo che
+    \emph{utile} ha due significati incompatibili''.
+    \item \textbf{Derivazione delle condizioni.} Dal comportamento delle due procedure sono state
+    ricavate le condizioni \Vone{}, \Vtwo{}, \Vthree{} e il teorema negativo che ne segue
+    (\autoref{chap:theory}).
+    \item \textbf{Verifica sperimentale.} Le condizioni sufficienti sono state verificate su
+    stati reali; le strategie euristiche sono state misurate su più famiglie di dataset, con
+    particolare attenzione a \emph{dove} esse funzionano e dove no.
+\end{enumerate}
+
+Un elemento del processo merita di essere esplicitato, perché ha modificato il corso del lavoro.
+L'analisi del passo 3 ha prodotto un risultato negativo, il teorema della
+\autoref{sec:negative-theorem}, che esclude la possibilità di raggiungere l'obiettivo di
+riduzione mantenendo la garanzia. Una parte non trascurabile del lavoro è consistita nel
+\emph{verificare} che quel risultato negativo non fosse un artefatto
+dell'implementazione, prima di accettarlo come limite del problema
+(\autoref{sec:maxextra}).
+
+\paragraph{Origine delle ipotesi.} Il lavoro è esplorativo: le ipotesi non precedono l'analisi ma
+nascono da essa, e la circostanza va dichiarata perché incide sul valore probatorio dei test. La
+\autoref{tab:hypotheses} distingue perciò, per ogni ipotesi, l'\emph{origine}: le ipotesi
+\emph{derivate} discendono da una proprietà stabilita prima di osservare i dati sperimentali ---
+una condizione dimostrata, una misura di struttura, l'analisi del costo --- e la loro previsione è
+argomentabile a priori; le ipotesi \emph{esplorative} sono state formulate durante l'analisi, e il
+loro esito va inteso come indicazione per ulteriori verifiche e non come conferma indipendente.
+Nessuna delle ipotesi primarie è stata formulata dopo aver visto l'esito dell'esperimento che la
+verifica; la distinzione è mantenuta anche nel capitolo dei risultati, dove gli esiti sono
+riportati per ciascuna.
+
+% =======================================================================================
+\section{Ipotesi primarie}\label{sec:hypotheses-list}
+
+Le ipotesi primarie sono sette e corrispondono alle domande che il lavoro pone: che cosa si può
+potare con garanzia, che cosa si può preservare senza garanzia, se esista una leva di qualità, se
+tale leva generalizzi, da che cosa dipenda il guadagno quando si manifesta, e che rapporto vi sia
+fra riduzione e tempo. La \autoref{tab:hypotheses} le enuncia con la previsione e il criterio di
+falsificazione; l'esito non è qui riportato.
+
+\begin{table}[htbp]
+\centering
+\caption{Ipotesi primarie, previsione, criterio di falsificazione e sezione in cui ciascuna è
+risolta. L'origine --- derivata da una proprietà stabilita prima della misura, oppure formulata
+durante l'analisi --- è dichiarata nella derivazione che segue alla tabella.}
+\label{tab:hypotheses}
+\footnotesize
+\begin{tabular}{@{}cp{3.3cm}p{3.3cm}p{2.3cm}c@{}}
+\toprule
+\# & ipotesi & previsione & falsificazione & risolta in \\
+\midrule
+H1 & \str{score-argmin} con veti protetti & riduzione $\ge \SI{30}{\percent}$ con output identico & riduzione inferiore alla soglia & \ref{sec:negative-results} \\
+H6 & \str{veto-cover} su tutte le famiglie & output identico alla configurazione di partenza & una sola configurazione con output diverso & \ref{sec:res-vetocover} \\
+H7 & verifica empirica di \Vtwo{} & zero discrepanze fra copertura prevista e verificata & una sola discrepanza & \ref{sec:res-vetocover} \\
+H8 & \str{precision-priority} da solo & guadagno di qualità & nessun guadagno o perdita & \ref{sec:ablation} \\
+H11 & \str{precision-priority} su Glass e Restaurant & guadagno anche fuori da Bridges & perdita su entrambe le famiglie & \ref{sec:res-boundary} \\
+H14 & attribuzione del guadagno alla precisione dei cluster & un riordino casuale non produce lo stesso guadagno & il riordino casuale produce lo stesso guadagno & \ref{sec:negative-results} \\
+H16 & proporzionalità fra riduzione e tempo & riduzioni maggiori producono tempi minori & una configurazione con riduzione maggiore e tempo non inferiore & \ref{sec:res-cost} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{H1 --- La strategia esatta lato generazione.} \str{score-argmin} preserva la generazione
+dei candidati per costruzione, perché calcola staticamente l'argomento del minimo che il sistema
+sceglierebbe. Ci si attende pertanto che, associata a una politica che tuteli integralmente il
+potere di veto, essa produca un output identico a quello della configurazione di partenza, e che
+la riduzione residua sia ancora significativa: la politica di tutela ripristina le regole
+portatrici di veto, ma non quelle la cui rimozione è provata priva di costo dalla condizione
+\Vtwo{}, e la classe \Vtwo{} vale fino a poco più di un quinto dell'insieme
+(\autoref{tab:conditions}). La previsione è una riduzione non inferiore al \SI{30}{\percent}.
+L'ipotesi è derivata: entrambe le premesse --- l'esattezza lato generazione e la dimensione della
+classe coperta --- sono stabilite prima della misura.
+
+\paragraph{H6 --- La classe garantita.} Se la condizione \Vtwo{} è corretta, la sua applicazione
+deve essere invisibile al sistema: le regole rimosse hanno un veto implicato da una regola
+sopravvissuta, e la proposizione della \autoref{prop:v2} assicura che nessun veto venga perso. La
+previsione è che l'output coincida con quello della configurazione di partenza su \emph{tutte} le
+configurazioni della griglia, non soltanto su quelle di una famiglia. È l'ipotesi con il criterio
+di falsificazione più severo, perché una sola configurazione difforme la falsifica.
+
+\paragraph{H7 --- Verifica indipendente della copertura.} La correttezza della condizione \Vtwo{}
+è stabilita per via logica, ma la sua \emph{implementazione} potrebbe essere difettosa: la ricerca
+dei copritori è un algoritmo, e un algoritmo può sbagliare. La previsione è che, controllando a
+posteriori su stati reali del dataset che ogni regola rimossa abbia effettivamente un copritore
+sopravvissuto che esercita il veto sugli stessi testimoni, non emerga alcuna discrepanza. La
+verifica è indipendente perché non riusa il codice della condizione ma ricostruisce i testimoni.
+
+\paragraph{H8 --- La leva di qualità.} L'analisi del sistema mostra che l'esito di
+un'imputazione dipende dall'ordine in cui i cluster vengono tentati
+(\autoref{sec:two-branches}), e che la posizione di una regola nell'ordine di scansione non
+richiede la rimozione di alcunché. Ne segue la previsione che un riordino che disponga per prime
+le regole con la precisione empirica più alta migliori il risultato senza toccare il potere di
+veto. L'ipotesi è derivata dalla struttura delle due procedure, non da un'osservazione sui
+risultati.
+
+\paragraph{H11 --- Generalizzazione della leva di qualità.} Se il meccanismo del guadagno è la
+composizione dei candidati e non una proprietà di Bridges, lo stesso riordino deve produrre un
+guadagno anche sulle altre famiglie. La previsione è che il guadagno si manifesti su Glass e su
+Restaurant; la falsificazione è una perdita su entrambe. L'ipotesi è deliberatamente severa: è la
+generalizzazione a decidere se il guadagno osservato su una famiglia sia un fenomeno del sistema o
+un accidente del dataset.
+
+\paragraph{H14 --- Attribuzione del guadagno.} Il riordino per priorità di precisione impiega un
+segnale --- la precisione empirica dei cluster --- e la spiegazione naturale del guadagno è che
+quel segnale sia la causa. Se la spiegazione è corretta, allora un riordino casuale non deve
+produrre lo stesso guadagno: la previsione è che il guadagno del riordino informato superi in modo
+sistematico quello di permutazioni con seme fissato. Si tratta di un'ipotesi di \emph{confutazione
+di una spiegazione} più che di verifica di una strategia, ed è classificata come esplorativa
+perché formulata dopo aver osservato il guadagno di cui cerca la causa.
+
+\paragraph{H16 --- Rapporto fra riduzione e tempo.} L'analisi del costo
+(\autoref{sec:cost}) mostra che il tempo è assorbito dalla verifica dei veti, che esamina
+l'insieme delle regole per ogni candidato: se il costo per candidato è proporzionale al numero di
+regole, la riduzione dell'insieme deve tradursi in una riduzione del tempo. La struttura del
+sistema suggerisce però una previsione opposta: il veto non si limita a costare, ma \emph{scarta}
+i candidati, e un insieme di regole più povero può lasciare in gara più alternative e quindi
+moltiplicare le verifiche. L'ipotesi assume la prima previsione; la seconda è la ragione per cui
+il criterio di falsificazione è enunciato in forma stretta --- una sola configurazione con
+riduzione maggiore e tempo non inferiore falsifica l'ipotesi --- e non come semplice assenza di
+correlazione.
+
+% =======================================================================================
+\section{Domande esplorative}\label{sec:exploratory}
+
+Le restanti ipotesi non hanno il carattere di previsione argomentabile a priori: riguardano
+varianti di parametri, strategie alternative e proprietà di portata locale, e sono state
+formulate nel corso dell'analisi. Sono raccolte separatamente, senza esito, perché il loro ruolo è
+delimitare lo spazio delle spiegazioni e indicare che cosa non funziona, non confermare una
+previsione. La \autoref{tab:exploratory} le elenca con la domanda a cui rispondono.
+
+\begin{table}[htbp]
+\centering
+\caption{Domande esplorative, con la sezione in cui ciascuna è risolta. Sono formulate durante
+l'analisi; il loro esito è riportato nella \autoref{sec:hypotheses-outcomes} e non ha valore di
+conferma indipendente.}
+\label{tab:exploratory}
+\footnotesize
+\begin{tabular}{@{}cp{7.6cm}c@{}}
+\toprule
+\# & domanda & risolta in \\
+\midrule
+H2  & \str{score-argmin} preserva la copertura anche su Glass e Restaurant? & \ref{sec:negative-results} \\
+H3  & esiste una strategia di copertura esatta delle celle, e a costo nullo? & \ref{sec:negative-results} \\
+H4  & la conversione delle regole di tipo \texttt{B} in tipo \texttt{D} produce un guadagno gratuito? & \ref{sec:d1} \\
+H5  & il riordino delle righe del dataset produce un guadagno? & \ref{sec:negative-results} \\
+H9  & riordino e potatura sommano i loro effetti? & \ref{sec:ablation} \\
+H10 & una regolarizzazione della stima delle precisioni produce un guadagno stabile? & \ref{sec:negative-results} \\
+H12 & la versione regolarizzata generalizza meglio delle altre? & \ref{sec:negative-results} \\
+H13 & il riordino entro il cluster è una leva di qualità? & \ref{sec:negative-results} \\
+H15 & l'ordinamento delle rimozioni sotto vincolo di budget è migliorabile? & \ref{sec:negative-results} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =======================================================================================

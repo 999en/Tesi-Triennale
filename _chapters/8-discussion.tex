@@ -1,0 +1,188 @@
+\chapter{Discussione}\label{chap:discussion}
+
+
+\noindent Questo capitolo raccoglie la lettura dei risultati e non introduce grandezze nuove: il
+suo contenuto è di interpretazione, e le misure a cui si riferisce sono quelle presentate nel
+capitolo precedente. Vi sono ricostruiti gli esiti delle ipotesi e il quadro complessivo che ne
+emerge, dichiarati i limiti dell'evidenza raccolta, e collocato il lavoro rispetto alla letteratura
+--- la riduzione classica di un insieme di regole e la selezione guidata dai metadati ---
+indicando quali verifiche estenderebbero i risultati e quali il materiale disponibile non ha
+consentito.
+
+\section{Esiti delle ipotesi}\label{sec:hypotheses-outcomes}
+
+La \autoref{tab:hypotheses-outcomes} raccoglie gli esiti. Le ipotesi sono quelle enunciate nella
+\autoref{tab:hypotheses} e nella \autoref{tab:exploratory}; nessuna è stata modificata dopo la
+misura.
+
+\begin{table}[htbp]
+\centering
+\caption{Esiti delle ipotesi. ``Confermata'' indica che la previsione è stata confermata dai dati;
+``falsificata'' che i dati la contraddicono. Per H1 il valore riportato è quello ottenuto dopo la
+correzione del difetto D5 (\autoref{sec:d5}): con il codice precedente la riduzione misurata era
+dello \SI{0.1}{\percent}.}
+\label{tab:hypotheses-outcomes}
+\footnotesize
+\begin{tabular}{@{}cp{3.6cm}p{4.0cm}p{3.4cm}@{}}
+\toprule
+\# & ipotesi & previsione & esito \\
+\midrule
+H1 & \str{score-argmin} con veti protetti & riduzione $\ge \SI{30}{\percent}$ & \textbf{falsificata} (\SI{0.3}{\percent}) \\
+H6 & \str{veto-cover} su tutte le famiglie & output identico & \textbf{confermata} \num{113}/\num{113} \\
+H7 & verifica empirica di \Vtwo{} & zero discrepanze & \textbf{confermata} \\
+H8 & \str{precision-priority} da solo & guadagno di qualità & \textbf{confermata} ($+96$ corrette su \num{30} configurazioni) \\
+H11 & \str{precision-priority} altrove & guadagno su Glass e Restaurant & \textbf{falsificata} \\
+H14 & guadagno attribuibile alla precisione & il casuale non produce lo stesso guadagno & \textbf{falsificata} \\
+H16 & riduzione e tempo proporzionali & tempi minori & \textbf{falsificata} (fino a \num{251}$\times$) \\
+\midrule
+H2  & \str{score-argmin} altrove & copertura non cala & confermata \\
+H3  & copertura esatta e gratuita & nessuna perdita & falsificata \\
+H4  & conversione \texttt{B}$\to$\texttt{D} & guadagno gratuito & falsificata \\
+H5  & riordino delle righe del dataset & guadagno & falsificata \\
+H9  & riordino $+$ potatura & guadagno maggiore & sub-additiva \\
+H10 & regolarizzazione $\alpha = 3$ & guadagno $\ge \SI{20}{\percent}$ & falsificata \\
+H12 & la regolarizzata generalizza meglio & guadagno maggiore & falsificata \\
+H13 & riordino entro il cluster & leva di qualità & falsificata \\
+H15 & ordinamento del budget migliorabile & guadagno & falsificata \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Le ipotesi confermate riguardano la teoria.} H6, H7 e H8 sono state confermate senza
+riserve, e riguardano la garanzia e la leva di qualità presa da sola: la condizione \Vtwo{}
+sopravvive alla verifica indipendente, la sua applicazione non altera il comportamento del sistema
+su alcuna configurazione, e il riordino per priorità di precisione produce un guadagno quando è
+impiegato da solo. È il nucleo dimostrativo del lavoro.
+
+\paragraph{Le ipotesi falsificate riguardano le euristiche e le attribuzioni.} H1, H11, H14 e H16
+sono state falsificate, e la loro falsificazione ha un valore che va oltre il caso singolo. H1
+mostra che la strategia esatta lato generazione non è utilizzabile con la politica di tutela,
+perché la classe garantita è troppo piccola per produrre la riduzione attesa. H11 mostra che il
+guadagno non generalizza. H14 mostra che il segnale che si riteneva responsabile del guadagno non
+lo spiega: il riordino casuale produce lo stesso effetto, e l'interpretazione che era stata
+formulata in una fase precedente del lavoro è stata corretta. H16 mostra che la riduzione non
+implica il risparmio di tempo.
+
+\paragraph{La lettura d'insieme.} Il quadro che emerge è coerente e si può riassumere in quattro
+punti. \emph{Primo}: esiste una potatura esatta, ed è piccola --- la condizione \Vtwo{} è corretta
+e verificata, ma la riduzione che consente è limitata, e il limite è intrinseco al criterio
+(\autoref{sec:maxextra}). \emph{Secondo}: esiste una potatura che migliora il risultato, ed è
+condizionata --- \str{A5b} riduce dell'\SI{84.2}{\percent} e migliora il risultato su Bridges,
+mentre sugli altri dataset danneggia, e la condizione di applicabilità è ora nota e misurabile.
+\emph{Terzo}: il guadagno non proviene dal segnale che si riteneva responsabile, e la spiegazione
+corretta è il prodotto di due fattori, la quota di imputazioni ottenute per via esatta e il numero
+di imputazioni effettuate. \emph{Quarto}: il tempo non segue la riduzione, e una strategia può
+rimuovere quasi tutte le regole peggiorando insieme il risultato e la durata.
+
+Va infine osservato che i tre interventi studiati --- la potatura esatta, la potatura aggressiva e
+la potatura conservativa --- non sono ordinabili. La prima non altera mai il risultato ma riduce
+poco; la seconda produce il guadagno maggiore ma soltanto su una famiglia; la terza non peggiora
+quasi mai ma rinuncia, nella maggior parte delle configurazioni, a qualunque riduzione. La scelta
+fra le tre dipende dall'obiettivo: garanzia, guadagno, o assenza di rischio.
+
+% =======================================================================================
+\section{Limiti dell'evidenza}\label{sec:res-limits}
+
+I limiti che seguono sono dichiarati perché delimitano la portata delle conclusioni, e non perché
+ridimensionino i risultati: ciascuno indica anche la verifica che servirebbe a superarlo.
+
+\paragraph{Il criterio diagnostico è post-hoc.} Il meccanismo a due fattori e il criterio che ne
+discende sono stati ricavati osservando i risultati su tre famiglie, non previsti prima della
+misura. La prova su una quarta famiglia è stata condotta (\autoref{sec:physician}) e ha prodotto
+due esiti coerenti con il criterio, ma su \num{40} celle con copertura non nulla, a una sola
+soglia, e senza che gli esiti siano distinguibili dal caso: due delle quattro versioni non sono
+eseguibili per righe malformate nel dataset (\autoref{sec:d3}). Il criterio va quindi inteso come
+una spiegazione con evidenza preliminare, non come una legge verificata su dati indipendenti.
+
+\paragraph{Una sola famiglia con guadagno pieno.} Il guadagno di qualità è stato osservato su
+Bridges; su Glass e Restaurant la stessa strategia danneggia, e la taratura conservativa riduce il
+danno senza produrre guadagno. La generalità del meccanismo è sostenuta dalla coerenza dei tre
+casi con la stessa legge, non da una molteplicità di famiglie favorevoli.
+
+\paragraph{Le misure di tempo provengono da una sola macchina.} Le campagne sono state condotte su
+una macchina a otto core, con esecuzioni strettamente sequenziali, e i valori assoluti dipendono
+dall'ambiente. I confronti sono appaiati --- la stessa configurazione con e senza potatura --- e
+sono quindi robusti rispetto all'ambiente, mentre i fattori di accelerazione e di rallentamento
+riportati nel capitolo vanno letti come ordini di grandezza.
+
+\paragraph{La numerosità è quella delle configurazioni.} L'unità di analisi è la configurazione,
+non la cella nulla, e i test impiegano quindi alcune decine di osservazioni
+(\autoref{sec:verification}). La potenza statistica è conseguentemente limitata: le conclusioni
+sulle strategie il cui effetto è piccolo rispetto alla variabilità fra configurazioni vanno
+considerate indicative. I test sono inoltre numerosi rispetto alle dimensioni del campione, e il
+capitolo riporta per questo i valori corretti per confronti multipli accanto a quelli grezzi
+(\autoref{sec:statistics}).
+
+\paragraph{Il perimetro non comprende il confronto con altri metodi di imputazione.} Il lavoro
+studia l'effetto della selezione delle regole \emph{a parità di sistema}: il termine di paragone è
+la stessa esecuzione senza potatura, non un algoritmo di imputazione alternativo. La scelta
+discende dal vincolo dichiarato --- la potatura opera sul file delle regole di un sistema
+specifico --- e va tenuta presente nel leggere i risultati: essi non dicono se il sistema studiato
+imputi meglio o peggio di altri, ma che cosa si guadagni o si perda potando le sue regole.
+
+\paragraph{Due famiglie dell'archivio non sono utilizzabili.} La famiglia Nursery non contiene
+dataset e la famiglia Physician, nelle versioni piene, ha dimensioni incompatibili con una
+campagna (\num{103592} righe e fino a \num{121913} celle nulle). La griglia effettiva è quindi
+composta da tre famiglie, ed è la ragione per cui la prova su una famiglia indipendente non ha
+potuto che essere esplorativa.
+
+% =======================================================================================
+\section{Collocazione e verifiche ulteriori}\label{sec:positioning}
+
+\paragraph{Rispetto alla riduzione classica di un insieme di regole.} La teoria classica delle
+dipendenze funzionali affronta la ridondanza in forma dichiarativa: una dipendenza è superflua se
+la sua rimozione non cambia l'insieme dei vincoli soddisfatti, e il calcolo di una copertura
+minimale è un'operazione standard (\autoref{sec:rule-reduction}). Il lavoro mostra che quella
+nozione non trasferisce al caso operativo, e la ragione è precisa: nel sistema studiato il ruolo di
+una regola è definito da come il programma la consuma, non dalla sua semantica dichiarativa, e due
+regole logicamente equivalenti possono avere effetti diversi perché differiscono per la direzione
+delle soglie. La condizione \Vtwo{} è l'analogo operativo della dominanza classica, ma richiede
+che la regola coprente sia \emph{più permissiva} a sinistra e \emph{più severa} a destra: la
+direzione opposta a quella che si otterrebbe ragionando sui soli vincoli. Il teorema negativo
+stabilisce che con l'informazione disponibile a una strategia esterna non si può andare oltre
+questa classe senza rinunciare alla garanzia.
+
+La distinzione non è soltanto argomentata: è misurata. Applicando il criterio classico come
+strategia di potatura (\str{classical-cover}) sulle configurazioni di Bridges a soglia 9, la
+riduzione raggiunge il \SI{97.4}{\percent} --- molto oltre il tetto della classe garantita --- ma
+l'output cambia in tutte le configurazioni, l'accuratezza mediana perde \num{14.3} punti e le
+imputazioni corrette scendono da \num{114} a \num{80} (\autoref{sec:res-classical}). Il confronto
+mostra insieme due cose: che la ridondanza dichiarativa non implica la sicurezza operativa, e che
+il numero di regole rimosse, da solo, non è un indicatore di qualità di una strategia.
+
+\paragraph{Rispetto alla selezione guidata dai metadati.} Una linea di ricerca recente impiega
+modelli linguistici per inferire relazioni fra colonne dal loro nome o per guidare
+l'esplorazione di fonti eterogenee (\autoref{sec:semantic-pruning}). L'ambizione è la stessa ---
+impiegare il significato invece della forma --- ma l'oggetto è diverso: quelle tecniche
+\emph{interpretano} i metadati per produrne di nuovi, mentre il lavoro qui presentato
+\emph{seleziona} metadati esistenti rispetto al consumo che ne fa un algoritmo noto. La differenza
+ha una conseguenza pratica: la garanzia di equivalenza che il \autoref{chap:theory} dimostra non
+dipende dalla qualità di una stima, ed è quindi verificabile per confronto di output; una
+selezione guidata da un modello linguistico richiederebbe invece una validazione statistica del
+modello stesso.
+
+\uninatodo{Manca la misura dell'esercizio effettivo dei veti.}
+
+\uninatodo{Manca il valore marginale del pruning esterno rispetto alla riduzione interna.}
+
+\paragraph{Che cosa renderebbe più forti le conclusioni.} Tre verifiche sono state identificate
+come decisive e non sono state condotte, ciascuna per una ragione dichiarata. La prima è la
+\emph{misura dell'esercizio effettivo dei veti}: il meccanismo a due fattori è oggi inferito dalla
+composizione degli output, e la strumentazione già disponibile consentirebbe di contare le
+verifiche effettivamente eseguite prima e dopo la potatura, sostituendo l'inferenza con una misura
+(\autoref{sec:future-work}). La seconda è il \emph{valore marginale della potatura esterna}
+rispetto alla riduzione che il sistema compie già da sé sulle regole a soglia nulla con lato
+sinistro chiave (\autoref{sec:dual-role}): quantificarlo richiede di calcolare la sovrapposizione
+fra le due classi, e direbbe quanto del lavoro è già svolto dall'eseguibile. La terza è la
+\emph{validazione prospettica del criterio} su una famiglia con quota esatta intermedia e
+copertura stabile: la prova sulla quarta famiglia ha fornito due casi coerenti ma su \num{40}
+celle, e non è sufficiente (\autoref{sec:physician}).
+
+\paragraph{Che cosa non è stato possibile verificare.} Le configurazioni piene della famiglia
+Physician restano fuori portata perché il preprocessing interno del sistema è quadratico nel numero
+di righe, e le due versioni remodulate riparabili non sono state ripristinate perché il costo di
+preprocessing non è giustificato dal numero di celle che se ne ricaverebbero
+(\autoref{sec:d3}). Il confronto con metodi di imputazione alternativi è fuori dal perimetro
+dichiarato del lavoro, che misura l'effetto della selezione delle regole a parità di sistema
+(\autoref{sec:res-limits}). Entrambe le circostanze sono limiti del materiale o del perimetro, non
+dell'impostazione, e sono state dichiarate prima che un lettore le incontrasse.

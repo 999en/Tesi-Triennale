@@ -1,0 +1,341 @@
+\chapter{Difetti e criticità del sistema}\label{chap:defects}
+
+
+\noindent Questo capitolo raccoglie i difetti individuati nel corso dell'analisi. Essi non sono
+un residuo accessorio del lavoro: la loro individuazione è stata resa necessaria dalla necessità
+di stabilire se i risultati negativi fossero da attribuire alle strategie sviluppate o al
+materiale di partenza, e la distinzione si è rivelata decisiva in più di un caso. Il capitolo
+separa i difetti del sistema studiato da quelli del codice sviluppato in questo lavoro --- i primi
+limiti del materiale, i secondi questione di attendibilità delle misure --- ne quantifica
+l'impatto, ne indica il rimedio e ne trae le conseguenze generali per chi impiegasse il sistema su
+altri dati.
+
+% =======================================================================================
+\section{Classificazione dei difetti}\label{sec:defects-taxonomy}
+
+I difetti individuati appartengono a quattro categorie, che è opportuno tenere distinte perché
+richiedono interventi di natura diversa. La distinzione che più conta, ai fini della lettura del
+capitolo, è però un'altra: quella fra i difetti del \emph{sistema studiato} --- quattro, tutti nel
+archivio --- e gli errori del \emph{codice sviluppato in questo lavoro} --- due,
+entrambi individuati e corretti durante l'analisi. I primi limitano ciò che si può concludere sul
+sistema; i secondi riguardano l'attendibilità delle misure e sono esposti perché il loro
+trattamento fa parte del metodo.
+
+\begin{table}[htbp]
+\centering
+\caption{Difetti individuati, per categoria e provenienza.}
+\label{tab:defects}
+\footnotesize
+\begin{tabular}{@{}clll@{}}
+\toprule
+\# & difetto & categoria & provenienza \\
+\midrule
+D1 & ramo irraggiungibile nel calcolo della similarità & algoritmo & materiale d'archivio \\
+D2 & disallineamento di schema nei dataset Glass & dati & materiale d'archivio \\
+D3 & indici di ground truth non ricostruibili (Physician) & dati & materiale d'archivio \\
+D4 & eseguibile di build contenente istruzioni di debug & artefatto & materiale d'archivio \\
+D5 & computo errato del budget nella politica sui veti & codice sviluppato & \textbf{questo lavoro} \\
+D6 & indice di rischio anti-correlato con la rilevanza & codice sviluppato & \textbf{questo lavoro} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =======================================================================================
+\begin{table}[htbp]
+\centering
+\caption{Impatto dei difetti, come sono stati rilevati e stato attuale. Le classi sono quelle
+della \autoref{tab:defects}.}
+\label{tab:defects-impact}
+\footnotesize
+\begin{tabular}{@{}lp{4.1cm}p{3.1cm}p{2.1cm}@{}}
+\toprule
+difetto & impatto quantificato & come è stato rilevato & stato \\
+\midrule
+D1 & la conversione \texttt{B}$\to$\texttt{D} è peggiore in \num{25} configurazioni su \num{25},
+con una perdita di \num{21.7} punti di accuratezza & confronto fra i due rami sul bytecode, poi
+misura & non corretto: il vincolo è di non modificare l'eseguibile \\
+D2 & la famiglia Glass non è utilizzabile come distribuita: lo schema dei dataset è posizionale,
+quello dei file di regole usa i nomi & prima esecuzione fallita, poi ispezione delle intestazioni & corretto esternamente, con rinomina documentata \\
+D3 & due configurazioni non eseguibili per righe malformate; \num{115} celle non localizzabili su
+\num{404}; celle valutabili da \num{329} a \num{40} & esecuzione fallita per eccezione di
+indice fuori intervallo; conteggio delle righe con campi mancanti & non riparato: costo di preprocessing non giustificato \\
+D4 & una build alternativa con due istruzioni di diagnostica, con comportamento identico
+sull'output & confronto fra i due eseguibili sulla stessa configurazione & documentato: esclude che l'archivio contenga una versione emendata di D1 \\
+D5 & riduzione allo \SI{0.1}{\percent} invece del \SI{17.1}{\percent} su Bridges a soglia 9;
+\SI{43.7}{\percent} delle rimozioni dichiarate esatte senza copritore sopravvissuto & confronto fra
+riduzione dichiarata ed effettiva su una pipeline composita & corretto e verificato su \num{8} configurazioni su \num{8} \\
+D6 & indice di rischio con $\rho = -0.237$ su \num{8961} regole; dopo la correzione, $2.5$ volte
+più regole inutili rimosse e $2.6$ volte meno celle servibili distrutte & validazione dell'indice
+contro il numero di celle che ciascuna regola può servire & corretto, senza guadagno sull'esito \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Difetti del sistema studiato}\label{sec:defects-system}
+
+I quattro difetti che seguono appartengono al materiale d'archivio del sistema studiato. Essi hanno
+una caratteristica comune: incidono sulla \emph{possibilità} di interpretare i risultati, non
+soltanto sulla loro qualità, e in due casi hanno reso inutilizzabile una parte della griglia
+sperimentale. Ciascuno è presentato con il sintomo, l'evidenza che lo stabilisce, l'impatto sui
+risultati e il rimedio adottato.
+
+\subsection{D1 --- Ramo irraggiungibile nel calcolo della similarità}\label{sec:d1}
+
+Il sistema calcola il contributo di similarità di un attributo con una procedura che distingue
+fra attributi numerici e attributi categorici. Il disassemblaggio mostra che la diramazione verso
+il caso categorico è \emph{irraggiungibile}: la condizione di selezione confronta riferimenti a
+oggetti anziché il contenuto, e non può quindi risultare vera. In conseguenza di ciò, un attributo
+categorico viene elaborato dalla procedura numerica, che tenta una conversione a numero, fallisce,
+e ricade su una distanza di stringa applicata a etichette che possono essere lunghe e prive di
+relazione.
+
+\begin{observation}
+Il difetto è confermato dall'analisi statica e non è stato corretto: il vincolo di non modificare
+l'eseguibile è stato mantenuto per tutta la durata della valutazione esterna. La sua esistenza
+non è un'ipotesi ma un fatto verificabile nel bytecode.
+\end{observation}
+
+\paragraph{Impatto sull'analisi.} Il difetto ha conseguenze sulla tipizzazione delle colonne
+impiegata nelle campagne. Si è verificato sperimentalmente che la conversione di una colonna da
+categoria a numerica, lungi dal costituire un miglioramento gratuito, peggiora il risultato:
+su \num{25} configurazioni, la conversione produce una perdita media di \SI{21.7}{} punti di
+accuratezza, con un peggioramento in \num{25} configurazioni su \num{25}. Il risultato ha
+richiesto di rivedere una conclusione formulata in una fase precedente del lavoro, nella quale la
+conversione era stata presentata come un guadagno.
+
+% =======================================================================================
+\subsection{D2 --- Disallineamento di schema nei dataset Glass}\label{sec:d2}
+
+I dataset della famiglia Glass presentano nomi di colonna in forma posizionale
+(\texttt{A}, \texttt{B}, \dots), mentre i corrispondenti file di regole impiegano nomi
+descrittivi. Per le altre famiglie i due insiemi di nomi coincidono; per Glass no.
+
+Il disallineamento non è innocuo. Il sistema risolve le colonne \emph{per posizione}, non per
+nome: quando gli schemi non coincidono, la corrispondenza fra le colonne del dataset e quelle
+delle regole è apparentemente corretta ma sostanzialmente errata, e il sistema scrive le
+imputazioni nella colonna sbagliata. La condizione è di corruzione silenziosa: nessun errore
+viene segnalato.
+
+\paragraph{Intervento.} La correzione adottata è esterna e consiste nel rinominare
+posizionalmente le colonne del dataset perché coincidano con quelle dei file di regole, e nel
+riscrivere di conseguenza il materiale di ground truth. L'ordine delle colonne non è modificato,
+sicché gli indici posizionali impiegati dal sistema restano validi.
+
+\paragraph{Impatto sull'analisi.} Prima della correzione la famiglia Glass risultava
+inutilizzabile, con copertura nulla. Dopo la correzione la copertura si attesta intorno al
+\SI{30}{\percent}. Va osservato che il difetto ha un effetto anche sull'interpretazione delle
+statistiche di training: i file di risultato prodotti prima della correzione registrano valori
+non imputati per tutte le celle, e non sono quindi impiegabili come riferimento. La circostanza ha
+richiesto di raccogliere statistiche ex novo su esecuzioni condotte con lo schema corretto.
+
+% =======================================================================================
+\subsection{D3 --- Righe malformate e indici non ricostruibili nei dataset Physician}
+\label{sec:d3}
+
+La famiglia Physician comprende quattro versioni ``remodulate'' di dimensioni contenute, pensate
+per la sperimentazione. Il loro materiale presenta due difetti distinti, che una verifica
+successiva ha permesso di separare.
+
+\paragraph{Righe con un numero di campi inferiore allo schema.} I dataset delle versioni 0.05 e
+0.1 contengono righe malformate: \num{7}, \num{11} o \num{1} campi invece di \num{13}. Il file
+della versione 0.05 termina a metà di un record, e nella 0.1 una riga mostra due record
+concatenati, con un valore testuale che risulta tagliato e ricomposto (``\texttt{PENNSYLVANIA
+COLLEGSICAL THERAPY}''). È questa la causa diretta della non eseguibilità: il controllo di chiave
+che il sistema esegue all'avvio accede ai campi di una tupla per indice, e su una riga corta esce
+con \texttt{IndexOutOfBoundsException}. La diagnosi è confermata dal materiale d'archivio: per
+entrambe le versioni il log, il file delle celle popolate e il file dei risultati spediti con
+l'archivio sono \emph{vuoti}, mentre per le versioni 0.005 e 0.01 sono popolati.
+
+\paragraph{Indici di ground truth eccedenti il dataset.} Il materiale di ground truth --- in
+formato \texttt{riga;attributo;valore} --- contiene indici di riga che eccedono il numero di righe
+del dataset corrispondente, ed è ben formato: il difetto riguarda il \emph{riferimento}, non la
+sintassi.
+
+\begin{table}[htbp]
+\centering
+\caption{Difetto D3. Righe malformate e voci di ground truth con indice fuori intervallo, per
+versione remodulata. Le colonne ``valutabili'' indicano le celle che restano dopo l'esclusione
+degli indici fuori intervallo.}
+\label{tab:physician-gt}
+\footnotesize
+\begin{tabular}{lrrrrr}
+\toprule
+versione & righe & righe malformate & voci ground truth & fuori intervallo & valutabili \\
+\midrule
+0.005 & 103  & 0 & 13  & 0   & 13 \\
+0.01  & 207  & 0 & 27  & 0   & 27 \\
+0.05  & 914  & \textbf{1} & 135 & \textbf{14}  & \textbf{121} \\
+0.1   & 1374 & \textbf{2} & 269 & \textbf{101} & \textbf{168} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Gli indici fuori intervallo provengono dal dataset completo, prima della riduzione, e non sono
+stati rimappati; le righe malformate indicano che la riduzione è avvenuta per \emph{troncamento}
+del file, circostanza che spiega anche perché gli indici non corrispondano più. Escludendo le voci
+non localizzabili, le celle valutabili passano da \num{40} a \num{329}: la correzione non richiede
+di modificare il dataset, ma soltanto di dichiarare quali celle si escludono.
+
+\paragraph{La ricostruzione della corrispondenza non è praticabile.} Si è verificato se gli indici
+potessero essere ricostruiti confrontando le righe delle versioni ridotte con quelle del dataset
+completo. La verifica ha dato esito negativo: su \num{200} righe esaminate, \num{29} non trovano
+corrispondenza e \num{73} risultano ambigue. Le versioni remodulate non sono un sottocampionamento
+del dataset completo ma una sua perturbazione, e l'informazione necessaria alla rimappatura non è
+contenuta nei dati disponibili.
+
+\paragraph{Riparazione possibile, non intrapresa.} Le righe malformate possono essere sostituite
+da righe di soli valori mancanti, conservando la numerazione su cui il ground truth è indicizzato
+e producendo righe che il sistema ignora in entrambi i ruoli; la procedura è implementata e
+documentata (\texttt{pruning/repair\_physician\_datasets.py}). La riparazione non è stata
+applicata alla campagna, perché il costo di preprocessing del sistema su queste configurazioni ---
+il controllo di chiave è quadratico nel numero di righe, e vale decine di minuti per esecuzione
+--- non è giustificato dal numero di celle che se ne ricaverebbero, e perché il contributo
+scientifico delle due versioni sarebbe comunque marginale rispetto alle versioni già eseguibili.
+
+\begin{observation}
+La famiglia Physician è utilizzabile come quarta famiglia per la verifica di equivalenza, e lo è
+stata (\autoref{sec:physician}); per la verifica di qualità fornisce \num{40} celle con copertura
+non nulla, un campione insufficiente a trarre conclusioni. La limitazione è del materiale, non
+dell'impostazione sperimentale, e va dichiarata come tale.
+\end{observation}
+
+% =======================================================================================
+\subsection{D4 --- Eseguibile di build con istruzioni di debug}\label{sec:d4}
+
+L'archivio contiene un secondo eseguibile, di dimensioni ridotte, la cui struttura interna è
+danneggiata (la directory centrale dell'archivio è assente). L'estrazione delle voci è comunque
+possibile, e il confronto con l'eseguibile principale mostra una sola differenza: la presenza di
+due istruzioni di stampa a scopo di diagnostica. Il comportamento è per il resto identico, come
+verificato eseguendo entrambi gli eseguibili sulla medesima configurazione e confrontando gli
+output.
+
+Non si tratta quindi di una versione con correzioni, ma di una build di sviluppo. La circostanza
+è rilevante in senso negativo: esclude che l'archivio contenga una versione emendata del difetto
+D1.
+
+% =======================================================================================
+\section{Errori rilevati e corretti nel codice sviluppato}\label{sec:defects-ours}
+
+I due difetti che seguono non appartengono al sistema studiato ma agli strumenti sviluppati in
+questo lavoro. La loro esposizione è deliberata e costituisce parte del contributo: entrambi sono
+stati individuati da verifiche interne --- il confronto fra riduzione dichiarata e riduzione
+effettiva, la validazione di un indice di rischio mai messo alla prova --- e in un caso la
+correzione ha cambiato il valore di una misura riportata in una fase precedente dell'analisi. Un
+lavoro che misuri l'effetto di una trasformazione su un sistema opaco deve poter esibire il
+controllo di qualità dei propri strumenti, perché è da lì che provengono gli errori più difficili
+da vedere.
+
+\subsection{D5 --- Computo errato del budget nella politica sui veti}\label{sec:d5}
+
+Questo difetto appartiene al codice sviluppato in questo lavoro, ed è esposto perché la sua
+individuazione e correzione costituiscono parte del contributo.
+
+\paragraph{Il difetto.} La politica \str{budget:F} limita la frazione di regole portatrici di veto
+che possono essere rimosse. Il computo della frazione includeva però anche le rimozioni
+\emph{provate prive di costo} dalla condizione \Vtwo{}: regole il cui potere di veto è implicato
+da una regola sopravvissuta. Tali rimozioni non sacrificano alcun veto, e addebitarle costituiva
+una doppia contabilizzazione.
+
+\paragraph{Secondo difetto, nella stessa procedura.} La condizione \Vtwo{} veniva valutata
+sull'insieme di regole \emph{in ingresso} anziché su quello \emph{sopravvissuto}. Se una strategia
+successiva rimuove la regola coprente, la garanzia decade. Su una pipeline composita si è
+misurato che il \SI{43.7}{\percent} delle rimozioni presentate come esatte non aveva più alcun
+copritore sopravvissuto.
+
+\paragraph{Un terzo effetto, nella politica di tutela.} La politica \str{protect}, che deve
+ripristinare le regole portatrici di veto non altrimenti garantite, ripristinava anche le regole
+la cui rimozione era dimostrabilmente priva di costo, annullando di fatto il risultato del
+teorema. Sulla configurazione esaminata la riduzione scendeva allo \SI{0.1}{\percent} invece del
+\SI{17.1}{\percent} che la condizione autorizza.
+
+\paragraph{Correzione e verifica.} La condizione \Vtwo{} è stata riformulata in modo da essere
+valutata sull'insieme corrente delle regole sopravvissute, e il computo del budget è stato
+corretto in modo che le rimozioni garantite non lo consumino. Dopo la correzione,
+\str{veto-cover} con tutela attiva raggiunge la medesima riduzione della variante senza tutela
+(\SI{17.1}{\percent} su Bridges a soglia 9), con output identico alla configurazione di partenza
+su \num{8} configurazioni su \num{8}.
+
+\begin{remark}
+Le campagne condotte prima della correzione non sono inficiate: la strategia \str{veto-cover} era
+sempre stata impiegata \emph{da sola}, circostanza nella quale l'insieme corrente coincide con
+quello in ingresso e i difetti non possono manifestarsi. Il difetto era latente, non realizzato.
+\end{remark}
+
+% =======================================================================================
+\subsection{D6 --- Indice di rischio anti-correlato}\label{sec:d6}
+
+La politica \str{budget:F} sceglie quali regole rimuovere ordinandole per un indice di rischio
+definito come somma dei valori mancanti sulle colonne del lato sinistro. L'indice non era mai
+stato validato. La validazione, condotta confrontando l'indice con il numero di celle che ciascuna
+regola può effettivamente servire, ha dato una correlazione di rango $\rho = -0.237$ su
+\num{8961} regole: l'indice non è semplicemente debole, è \emph{anti-correlato}.
+
+La causa è stata individuata con precisione: l'indice somma i valori mancanti sulle colonne del
+lato \emph{sinistro}, mentre una regola può servire soltanto celle della propria colonna di
+\emph{destra}. Ne segue che le regole la cui colonna di destra non presenta mai valori mancanti
+--- e che quindi non possono servire alcuna cella --- ricevono un indice basso e vengono rimosse
+per prime. L'ordinamento promuoveva a bersaglio esattamente le regole innocue.
+
+La correzione adotta un indice calcolato sulle celle nulle reali. A parità di budget, il nuovo
+ordinamento rimuove $2.5$ volte più regole che non servono alcuna cella e distrugge $2.6$ volte
+meno celle servibili. Come riportato nella \autoref{sec:negative-results}, il miglioramento
+strutturale \emph{non} si traduce in un miglioramento dell'esito, e la circostanza ha portato a
+concludere che sotto vincolo di budget conti la dimensione del budget e non l'ordinamento.
+
+% =======================================================================================
+\section{Che cosa insegnano questi difetti}\label{sec:system-behaviour}
+
+Alcune caratteristiche del sistema non costituiscono difetti ma sono rilevanti per
+l'interpretazione dei risultati, e sono raccolte qui insieme alle conseguenze generali del
+catalogo.
+
+\paragraph{Codice non raggiungibile.} Il disassemblaggio individua procedure che il codice
+applicativo non invoca mai: una procedura di ricerca locale affetta da un errore di segno, due
+procedure di riordino delle tuple basate su euristiche, un comparatore di soglie affetto da
+troncamento nella conversione a intero, e un meccanismo di gestione di regole privilegiate di
+fatto inerte. La circostanza è stata verificata empiricamente oltre che staticamente.
+
+\begin{observation}
+Il comparatore di soglie merita una nota, perché il suo troncamento lo rende non transitivo e
+avrebbe potuto spiegare l'irregolarità dell'ordine di partenza osservata nella
+\autoref{sec:negative-results}. La verifica sui sorgenti decompilati mostra però che nessuna
+classe lo istanzia: è codice morto, e non può essere la causa di alcun comportamento osservato.
+L'ipotesi è stata scartata su questa base.
+\end{observation}
+
+\paragraph{L'argomento di selezione dell'euristica è inerte.} Il sesto argomento della riga di
+comando, che dovrebbe selezionare l'euristica di riempimento, non è letto. La circostanza è
+stata verificata eseguendo il sistema con valori diversi dell'argomento e confrontando gli
+output, che risultano identici. Tutte le osservazioni di questo lavoro valgono per la sola
+procedura effettivamente eseguita.
+
+\paragraph{Che cosa avrebbe potuto rilevare prima questi difetti.} Nessuno dei sei difetti è stato
+individuato da un test automatico del materiale d'archivio, e per ciascuno esiste una verifica
+elementare che lo avrebbe fatto prima. D1 e D4 sono difetti di codice: un test di copertura dei
+rami avrebbe mostrato che il ramo categorico non è mai eseguito, e un confronto fra gli eseguibili
+distribuiti avrebbe mostrato le due istruzioni di diagnostica. D2 e D3 sono difetti di dati: un
+controllo di schema --- il numero di campi per riga e la corrispondenza fra intestazione e
+riferimenti --- li avrebbe segnalati al momento della distribuzione, senza bisogno di eseguire
+nulla. D5 e D6 sono difetti propri del codice sviluppato in questo lavoro, e in entrambi i casi il
+controllo che li ha rivelati è stato un confronto fra ciò che la procedura \emph{dichiara} di fare
+e ciò che \emph{fa}: nel primo caso fra riduzione annunciata e riduzione effettiva, nel secondo fra
+l'indice di rischio e la grandezza che dovrebbe approssimare. La raccomandazione che se ne trae è
+di introdurre questi quattro controlli --- copertura dei rami, confronto fra artefatti, validazione
+dello schema, coerenza fra dichiarazione ed effetto --- prima di misurare qualunque cosa su un
+sistema opaco.
+
+\paragraph{Che cosa il catalogo insegna sul progetto di algoritmi a RFD.} I sei difetti, letti
+insieme, indicano tre proprietà ricorrenti. La prima è la distanza fra documentazione e
+comportamento: un sistema può esporre un parametro che non legge, eseguire una sola delle
+procedure che dichiara di offrire, e contenere rami che il codice non può raggiungere; per questo
+l'analisi del \autoref{chap:renuver} è stata condotta sul bytecode e non sui documenti. La seconda
+è la concentrazione del costo: la quasi totalità del tempo è in una procedura sola
+(\autoref{sec:cost}), e ciò rende la riduzione dell'insieme di regole l'unica leva temporale di
+rilievo, ma anche la più delicata, perché quella stessa procedura è quella che il pruning può
+indebolire. La terza riguarda chi misura: due dei sei difetti appartengono agli strumenti
+sviluppati in questo lavoro, e la loro individuazione ha richiesto di confrontare in modo
+sistematico ciò che una strategia \emph{dichiara} di fare con ciò che \emph{fa}
+(\autoref{sec:defects-ours}). Ne segue una raccomandazione operativa per chi impiegasse il sistema
+su altri dati: verificare l'effettiva equivalenza degli output prima di attribuire un effetto a
+una strategia di potatura, e considerare le configurazioni in cui il file prodotto coincide con
+quello di partenza come prove nulle anziché come conferme.

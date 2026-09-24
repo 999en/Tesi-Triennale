@@ -1,0 +1,42 @@
+% =======================================================================================
+% Appendice B: tabelle complete dei risultati
+% =======================================================================================
+\chapter{Tabelle complete dei risultati}\label{app:results}
+
+\noindent Questa appendice raccoglie le tabelle complete delle campagne, che il
+\autoref{chap:results} riporta in forma aggregata. Le tabelle sono \emph{generate} dai file di
+risultato delle campagne dalla procedura \texttt{pruning/make\_appendix\_tables.py}, e i totali che
+esse riportano coincidono con i valori discussi nel corpo della tesi: la generazione è quindi
+anche una verifica di coerenza fra i numeri citati e i dati grezzi, con la stessa logica della
+procedura di verifica automatica descritta nell'appendice sulla riproducibilità.
+
+% =======================================================================================
+\section{Campagna principale su Bridges}\label{sec:app-bridges}
+
+La \autoref{tab:app-bridges} riporta le \num{50} configurazioni della campagna principale, con la
+medesima ricetta di accoppiamento impiegata nei test: per ogni configurazione la baseline e la
+variante \str{A5b}, eseguite sullo stesso dataset, alla stessa soglia, con lo stesso seme. I
+totali in fondo alla tabella --- \num{69} imputazioni corrette in più e \num{72} errori in meno
+--- sono quelli discussi nella \autoref{sec:res-a5b}.
+
+\input{_chapters/B-tables-generated.tex}
+
+% =======================================================================================
+\section{Studio di ablazione}\label{sec:app-ablation}
+
+La \autoref{tab:app-ablation} riporta le venti configurazioni comuni ai quattro bracci
+dell'ablazione. La tabella rende verificabile la lettura discussa nella \autoref{sec:ablation}: la
+somma delle variazioni dei due componenti isolati è pari a $+5$, mentre la variazione della
+combinazione è pari a $+45$, e la differenza ($+40$) è la sinergia che il \autoref{sec:mechanism}
+spiega.
+
+% =======================================================================================
+\section{Taratura conservativa}\label{sec:app-a99}
+
+La \autoref{tab:app-a99} riporta le \num{97} configurazioni della campagna con il parametro di
+aggressività portato al valore conservativo. Vi compare il dato su cui poggia la conclusione della
+\autoref{sec:res-boundary}: la riduzione mediana è nulla, la massima è pari al
+\SI{52.9}{\percent}, e le variazioni complessive sono di una imputazione corretta in meno e di tre
+errori in meno. È questa la ragione per cui la strategia, in quella taratura, viene descritta come
+\emph{non dannosa} e non come vantaggiosa: l'effetto sulla qualità non è distinguibile da zero
+(\autoref{tab:statistics}), mentre quello sulla riduzione è concentrato in poche configurazioni.

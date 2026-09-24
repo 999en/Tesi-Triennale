@@ -1,0 +1,140 @@
+% =======================================================================================
+% Appendice: riproducibilità
+% =======================================================================================
+\chapter{Riproducibilità dei risultati}\label{app:reproducibility}
+\begingroup\globaldefs=1 \pagestyle{appendices}\endgroup
+
+\noindent Questa appendice documenta come i risultati presentati nel
+\autoref{chap:results} possano essere riprodotti e verificati.
+
+% =======================================================================================
+\section{Struttura del materiale}\label{sec:appendix-layout}
+
+Il materiale è organizzato nelle seguenti cartelle.
+
+\begin{description}[leftmargin=0em]
+    \item[\texttt{RENUVER/}] l'archivio di partenza: eseguibile, dataset, file di regole,
+    materiale di ground truth e file di risultato delle esecuzioni originali. L'eseguibile non è
+    mai stato modificato; la verifica di integrità è effettuata per checksum. L'archivio include
+    un \texttt{README} che documenta la struttura delle cartelle e i parametri della riga di
+    comando: le discrepanze fra quel documento e il comportamento osservato del codice sono
+    discusse nella \autoref{sec:architecture} e nel \autoref{chap:defects}.
+    \item[\texttt{pruning/}] gli strumenti sviluppati: il pruner, il sistema di valutazione, gli
+    script di verifica e quelli di orchestrazione delle campagne.
+    \item[\texttt{results/}] i file di risultato di tutte le campagne, in formato JSON, con una
+    voce per ogni esecuzione e i relativi indicatori; in \texttt{results/analisi/} i dati delle
+    prove che non appartengono a una campagna.
+    \item[\texttt{analisi/}] l'analisi del sistema: disassemblaggio commentato, modello dei dati,
+    inventario del codice non raggiungibile.
+    \item[\texttt{report.md}] la documentazione estesa del lavoro, con la derivazione completa
+    delle condizioni teoriche e il dettaglio di tutte le campagne.
+\end{description}
+
+% =======================================================================================
+\section{Verifica automatica dei risultati}\label{sec:appendix-audit}
+
+I numeri asseriti nella documentazione sono ricalcolati dai file di risultato da una procedura
+automatica di verifica, che li confronta con i valori asseriti e segnala ogni divergenza. La
+procedura copre \num{67} asserzioni, fra cui le condizioni teoriche derivate dal bytecode, le
+metriche aggregate di ciascuna campagna e i risultati dei test statistici.
+
+La procedura è stata impiegata durante la stesura: ha individuato e consentito di correggere tre
+valori non aggiornati, fra cui un risultato il cui segno si invertiva estendendo il campione da
+\num{14} a \num{15} configurazioni, e che era stato inizialmente riportato con il segno errato.
+La circostanza motiva l'adozione della procedura: un risultato che cambia segno aggiungendo una
+configurazione su quindici non è robusto, e non deve essere presentato come se lo fosse.
+
+Due procedure ulteriori completano la verifica dei numeri citati nella tesi, ed entrambe operano
+sui soli file di risultato, senza rieseguire il sistema.
+
+\begin{sloppypar}
+\begin{itemize}[leftmargin=1.4em]
+    \item la prima, \texttt{stats\_effects.py}, ricalcola i test della famiglia primaria con la
+    medesima ricetta di appaiamento impiegata dalla campagna --- chiave (dataset, soglia,
+    ripetizione), baseline e variante entrambe concluse con esito regolare --- e produce, oltre ai
+    valori di $p$ già pubblicati, la dimensione dell'effetto, l'intervallo di confidenza bootstrap
+    della differenza mediana e il valore di $p$ corretto con la procedura di Holm
+    (\autoref{tab:statistics});
+    \item la seconda, \texttt{make\_appendix\_tables.py}, genera le tabelle complete
+    dell'\autoref{app:results} dai file di risultato; i totali che esse riportano coincidono con
+    i valori discussi nel \autoref{chap:results}, e la generazione è quindi anche un controllo di
+    coerenza fra i numeri citati e i dati grezzi.
+\end{itemize}
+\end{sloppypar}
+
+Le due procedure sono deterministiche: a parità di file di ingresso producono lo stesso output, e
+il ricampionamento impiegato per gli intervalli di confidenza usa un seme fissato. I dati
+dell'esperimento di ordinamento, che non appartengono a una campagna ma a un controllo dedicato,
+sono archiviati con gli altri in \texttt{results/analisi/}.
+
+% =======================================================================================
+\section{Verifica di equivalenza della ricompilazione}\label{sec:instrumentation}
+
+La caratterizzazione del costo computazionale (\autoref{sec:cost}) ha richiesto di ricompilare il
+sistema, distribuito senza sorgenti. La procedura adottata è la seguente.
+
+\begin{enumerate}[leftmargin=1.6em]
+    \item \textbf{Decompilazione} delle classi applicative dell'archivio.
+    \item \textbf{Ricompilazione} per la versione \num{52} del formato \texttt{class}, contro le
+    medesime librerie incorporate nell'archivio originale.
+    \item \textbf{Ricostruzione} dell'archivio sostituendo \emph{soltanto} le classi applicative
+    dentro una copia dell'originale: le restanti classi di libreria restano quelle di partenza.
+    \item \textbf{Verifica di equivalenza} eseguendo l'archivio originale e quello ricostruito
+    sulla medesima configurazione, in cartelle isolate, e confrontando gli output.
+\end{enumerate}
+
+L'esito della verifica è riportato nella \autoref{tab:equivalence}: i file di output coincidono
+byte per byte, e le uniche differenze riguardano i tempi di esecuzione registrati, che variano
+fisiologicamente fra esecuzioni.
+
+\begin{table}[htbp]
+\centering
+\caption{Verifica di equivalenza della ricompilazione. Configurazione
+\texttt{bridges\_70\_1}, soglia 15.}
+\label{tab:equivalence}
+\footnotesize
+\begin{tabular}{lll}
+\toprule
+file & dimensione & esito del confronto \\
+\midrule
+\texttt{Populated} & \SI{1377}{\byte}  & \textbf{identico} (checksum \texttt{682428f09943}) \\
+\texttt{Results}   & \SI{11522}{\byte} & \textbf{identico} (checksum \texttt{8eca4ca48f2a}) \\
+\texttt{Logs}      & ---               & differisce \emph{solo} nelle righe di tempo \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Solo dopo questa verifica il sistema è stato strumentato, aggiungendo contatori e misure di tempo
+mediante \emph{wrapper} sui metodi di interesse anziché modificandone i corpi, in modo che il
+flusso di controllo restasse quello originale.
+
+% =======================================================================================
+\section{Comandi principali}\label{sec:appendix-commands}
+
+Le campagne sono orchestrate da script che invocano il sistema di valutazione. A titolo
+esemplificativo, la valutazione di una strategia su una famiglia di dataset richiede:
+
+\begin{quote}
+\texttt{python3 pruning/benchmark.py \textbackslash}\\
+\texttt{\ \ --datasets <elenco> --runs <elenco> --thresholds <elenco> \textbackslash}\\
+\texttt{\ \ --variants "<nome>=<strategia>:<politica>" \textbackslash}\\
+\texttt{\ \ --out results/<nome>.json}
+\end{quote}
+
+\noindent Il sistema di valutazione provvede a eseguire la configurazione di riferimento, a
+produrre il file di regole potato per ciascuna variante, a eseguire il sistema su entrambi e a
+calcolare le metriche in forma appaiata. I risultati sono memorizzati incrementalmente, cosicché
+una campagna interrotta può essere ripresa.
+
+% =======================================================================================
+\section{Ambiente di esecuzione}\label{sec:appendix-env}
+
+Le campagne sono state condotte su una macchina a otto core, con esecuzioni strettamente
+sequenziali. La sequenzialità non è una scelta di comodo: la cartella di lavoro del sistema è
+condivisa fra esecuzioni, ed esecuzioni simultanee sovrascrivono reciprocamente gli output
+producendo risultati errati senza segnalare alcun errore. La circostanza è stata verificata
+sperimentalmente.
+
+Le versioni delle librerie impiegate per la ricompilazione sono fissate e documentate, poiché
+versioni diverse possono produrre differenze nel comportamento della generazione dei numeri
+casuali e quindi nei risultati.

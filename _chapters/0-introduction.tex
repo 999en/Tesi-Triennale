@@ -1,0 +1,214 @@
+\newpage\pagestyle{introduction}
+
+\unnumberedchapter{Introduzione}
+
+\unnumberedsection{Contesto e motivazioni}
+
+La qualità dei dati è un requisito operativo prima che teorico: un'analisi condotta su
+informazioni incomplete produce conclusioni che nessun metodo statistico può recuperare. Quando
+un attributo di una tupla è privo di valore, la scelta non è fra ``imputare'' e ``non imputare'',
+ma fra imputare in modo informato e scartare il dato. È questa la ragione dell'interesse per la
+\emph{data imputation}: ricostruire il valore mancante a partire dal resto dell'informazione
+disponibile.
+
+Tra gli approcci recenti, quelli basati su \emph{Relaxed Functional Dependencies} (RFD) hanno una
+proprietà che li distingue: le regole di imputazione non vengono fornite dall'esterno, ma estratte
+dal dataset stesso. Una RFD esprime un vincolo di dipendenza approssimato fra attributi ---
+\emph{se due tuple concordano entro certe soglie sugli attributi di sinistra, allora concordano
+entro una soglia sull'attributo di destra} --- e può quindi essere usata sia per generare
+candidati all'imputazione sia per rifiutare quelli incoerenti. Il sistema \renuver{} \cite{breve2022renuver}
+è un rappresentante di questa famiglia.
+
+Il prezzo di questa ricchezza è computazionale: la fase di estrazione produce tipicamente migliaia
+di regole, e il costo dell'imputazione cresce con il loro numero. Molte di esse, però, non
+influenzano il risultato. Da qui il problema affrontato in questo lavoro: \emph{si possono
+selezionare le RFD rilevanti senza alterare il comportamento del sistema?} È la domanda del
+\emph{semantic pruning} applicato a un insieme di metadati.
+
+\unnumberedsection{Problema affrontato}
+
+Il sistema \renuver{} riceve in ingresso, oltre al dataset, un file di RFD. L'ipotesi di partenza
+--- suggerita dalla struttura del sistema --- è che una parte di quel file sia ridondante e che
+rimuoverla riduca il tempo di esecuzione senza degradare la qualità delle imputazioni.
+
+Il problema si rivela però più sottile di così, per una ragione che questo lavoro porta alla luce
+in modo formale: nel sistema studiato le RFD svolgono \emph{due ruoli distinti}, e i due ruoli
+impongono requisiti opposti. Una RFD serve a \emph{generare} candidati all'imputazione, ma serve
+anche a \emph{vetare} imputazioni che violerebbero il vincolo. Rimuovere una regola inutile per il
+primo ruolo non garantisce che essa sia inutile per il secondo, e nulla nel formato del file
+distingue i due casi.
+
+Da questa osservazione discendono le due domande che strutturano la tesi:
+
+\begin{enumerate}[label=\textbf{D\arabic*.},leftmargin=2.2em]
+    \item \textbf{Che cosa si può potare con garanzia?} Esiste una classe di regole la cui
+    rimozione è dimostrabilmente priva di conseguenze, e quanto è grande?
+    \item \textbf{Che cosa si guadagna quando la garanzia si abbandona?} Se si rimuovono regole
+    anche a costo di alterare il comportamento, quali sono i guadagni e a quali condizioni?
+\end{enumerate}
+
+\unnumberedsection{Domanda di ricerca}\label{sec:research-question}
+
+Il lavoro muove da una domanda formulata in termini verificabili. Dato l'insieme di RFD che il
+sistema riceve in ingresso, \emph{è possibile ridurne il numero almeno della metà mantenendo
+l'accuratezza e la copertura entro cinque punti percentuali dalla versione originale, e riducendo
+il tempo di esecuzione?} La domanda ha tre esiti distinti --- la riduzione, la qualità delle
+imputazioni e il costo --- e la risposta del lavoro non è uniforme sui tre.
+
+Sul primo esito la risposta è \emph{negativa}, e non per insufficienza delle strategie: il
+\autoref{chap:theory} dimostra che una potatura che operi sul solo file delle regole e non rinunci
+a nessuna garanzia non può superare, sui dataset esaminati, il \SI{20.9}{\percent} di riduzione.
+Sul secondo esito la risposta è \emph{condizionata}: la potatura può migliorare il risultato --- su
+Bridges lo migliora in modo statisticamente significativo --- ma soltanto quando la composizione
+delle imputazioni lascia spazio al miglioramento, e sugli altri dataset danneggia. Sul terzo esito
+la risposta è \emph{negativa nel caso generale e positiva in un caso}: la riduzione delle regole
+non implica un risparmio di tempo, e la strategia che rimuove di più è quella che rallenta di più.
+Il contributo del lavoro è di stabilire questi tre confini e di fornire il criterio con cui
+riconoscere, su un dataset nuovo, in quale dei tre regimi ci si trovi.
+
+La \autoref{tab:research-question} anticipa la forma delle tre risposte, con il rimando alle
+sezioni in cui ciascuna è argomentata: serve a rendere esplicito fin dall'inizio che cosa il
+lavoro sosterrà e che cosa non sosterrà.
+
+\begin{table}[htbp]
+\centering
+\caption{Risposta alla domanda di ricerca, per esito. La tabella anticipa la struttura
+dell'argomentazione; le grandezze sono discusse nelle sezioni indicate.}
+\label{tab:research-question}
+\footnotesize
+\begin{tabular}{@{}p{2.5cm}p{7.3cm}p{2.4cm}@{}}
+\toprule
+esito & risposta & dove \\
+\midrule
+riduzione $\ge \SI{50}{\percent}$ \emph{con garanzia} & \textbf{impossibile}: la classe di regole
+la cui rimozione è certificabile non supera il \SI{20.9}{\percent} sui dataset esaminati, e il
+limite è del criterio, non dell'implementazione & \autoref{chap:theory}, \autoref{sec:maxextra} \\
+accuratezza e copertura entro cinque punti & \textbf{condizionata}: il risultato migliora dove la
+composizione delle imputazioni ha spazio per migliorare e la copertura non cala, e peggiora dove
+una delle due condizioni manca & \autoref{sec:res-a5b}, \autoref{sec:res-boundary} \\
+riduzione del tempo di esecuzione & \textbf{non garantita}: il tempo dipende dalla composizione
+dell'insieme potato, non dalla sua dimensione; il caso migliore accelera di \num{11} volte, il
+peggiore rallenta di \num{251} & \autoref{sec:res-cost} \\
+\midrule
+\multicolumn{3}{@{}p{12.2cm}@{}}{\footnotesize Il criterio diagnostico della
+\autoref{sec:diagnostic} rende operativa la seconda risposta: decide a costo nullo se la leva del
+miglioramento esiste, e impone di misurare la copertura prima di adottare la potatura.} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\unnumberedsection{Obiettivi del lavoro}
+
+Gli obiettivi, in ordine di priorità:
+
+\begin{itemize}[leftmargin=1.4em]
+    \item \textbf{Caratterizzare il sistema.} Derivare dal comportamento effettivo di \renuver{}
+    --- non dalla sua documentazione --- le condizioni sotto le quali una RFD può influenzare
+    un'imputazione, e tradurle in criteri di potatura verificabili.
+    \item \textbf{Definire una metodologia di pruning.} Progettare e implementare strategie di
+    selezione, distinguendo esplicitamente quelle che offrono una garanzia da quelle euristiche.
+    \item \textbf{Valutare l'impatto.} Misurare l'effetto della potatura sulle prestazioni
+    dell'imputazione --- accuratezza, copertura, precisione e tempi --- con un protocollo
+    appaiato e test statistici, su più famiglie di dataset.
+    \item \textbf{Spiegare i risultati.} Non limitarsi a misurare: individuare il meccanismo che
+    determina quando la potatura conviene e quando danneggia.
+\end{itemize}
+
+\unnumberedsection{Contributi della tesi}
+
+I contributi originali di questo lavoro sono i seguenti.
+
+\begin{enumerate}[leftmargin=1.6em]
+    \item \textbf{Tre condizioni esatte derivate dal bytecode} \Vone{}, \Vtwo{}, \Vthree{},
+    che classificano le RFD in base al loro ruolo effettivo nel sistema. \Vtwo{} è la più
+    rilevante: identifica le regole il cui potere di veto è implicato da un'altra regola
+    sopravvissuta, e la loro rimozione è quindi priva di effetti.
+
+    \item \textbf{Un teorema negativo} (\autoref{chap:theory}) che delimita il campo: se la
+    potatura opera sul solo file delle regole e ogni rimozione è certificata con l'informazione
+    ivi disponibile, allora le regole rimovibili sono quelle inerti oppure quelle il cui veto è
+    implicato da una regola sopravvissuta. Il risultato è quantificato: la classe potabile con
+    garanzia non supera il \SI{20.9}{\percent} sui dataset studiati, e si dimostra che tale tetto
+    è \emph{intrinseco al criterio} e non un artefatto della sua implementazione
+    (\autoref{sec:maxextra}). Il teorema separa ciò che è dimostrato --- la caratterizzazione
+    delle rimozioni certificabili --- da ciò che è misurato, e la distinzione è mantenuta in
+    tutto il lavoro.
+
+    \item \textbf{Una verifica empirica della condizione \Vtwo{}} (\autoref{sec:res-vetocover})
+    su \num{1242321} terne con zero
+    discrepanze, e la conferma che la sua applicazione lascia l'output identico al sistema
+    originale su \num{113} configurazioni su \num{113}, su quattro famiglie di dataset.
+
+    \item \textbf{Un'euristica di potatura aggressiva} (\str{A5b}, \autoref{sec:res-a5b}) che su Bridges rimuove
+    l'\SI{84.2}{\percent} delle regole \emph{migliorando} il risultato (\num{69} imputazioni
+    corrette in più, \num{72} errori in meno, \num{11} volte più veloce), e la misurazione del
+    fatto che la stessa strategia danneggia gli altri dataset.
+
+    \item \textbf{La spiegazione del perché} (\autoref{sec:mechanism}). Il guadagno della potatura aggressiva si scompone
+    nel prodotto di due fattori --- la quota di imputazioni ottenute per via esatta e il numero
+    di imputazioni effettuate. La potatura conviene solo quando entrambi crescono. Ne discende
+    un criterio diagnostico misurabile prima di potare, che sostituisce la soglia euristica
+    precedentemente adottata.
+
+    \item \textbf{Sei difetti documentati} (\autoref{chap:defects}), quattro del materiale
+    d'archivio e due del codice sviluppato, con impatto quantificato e procedura di
+    riproduzione: con procedura di
+    riproduzione: un ramo irraggiungibile nel codice di calcolo della similarità, un
+    disallineamento di schema nei dataset Glass, indici di ground truth non ricostruibili nei
+    dataset Physician, e una build con istruzioni di debug. A questi si aggiunge un difetto di
+    correttezza nel codice sviluppato in questo lavoro, individuato e corretto.
+
+    \item \textbf{La caratterizzazione del costo computazionale} del sistema
+    (\autoref{sec:cost}), ottenuta ricompilando il codice originale da sorgenti decompilati ---
+    con equivalenza verificata rispetto all'eseguibile di partenza --- e strumentandolo: il
+    \SI{99}{\percent} del tempo di esecuzione è nella verifica dei veti, non nella generazione
+    dei candidati.
+
+    \item \textbf{La confutazione della proporzionalità fra riduzione e tempo}
+    (\autoref{sec:res-cost}). Il lavoro mostra che il tempo di esecuzione dipende dalla
+    \emph{composizione} dell'insieme potato e non dalla sua dimensione: la strategia che rimuove
+    fino al \SI{98}{\percent} delle regole rallenta l'esecuzione fino a \num{251} volte, e una
+    variante che conserva più regole di un'altra risulta circa nove volte più lenta. La
+    spiegazione candidata --- la perdita della scorciatoia esatta per le tuple con una sola cella
+    nulla --- è dichiarata come non verificata.
+\end{enumerate}
+
+\unnumberedsection{Struttura dell'elaborato}
+
+Il \autoref{chap:background} introduce i concetti preliminari e colloca il lavoro rispetto alla
+letteratura: qualità dei dati, valori mancanti, tecniche di imputazione, \emph{Relaxed Functional
+Dependencies}, riduzione di un insieme di regole, misure di similarità e la nozione di semantic
+pruning adottata.
+
+Il \autoref{chap:renuver} analizza il sistema \renuver{} per disassemblaggio: architettura, flusso
+di imputazione, dataset impiegati, il doppio ruolo delle RFD, le due procedure di riempimento e la
+caratterizzazione del costo computazionale.
+
+Il \autoref{chap:methodology} presenta la metodologia: motivazioni, spazio delle strategie, le
+strategie implementate, le condizioni esatte di potatura derivate dal comportamento del sistema e
+il contratto di integrazione.
+
+Il \autoref{chap:theory} formula e dimostra il risultato negativo che delimita il campo di
+applicabilità, ne trae la conseguenza sul target di riduzione e ne precisa la portata.
+
+Il \autoref{chap:hypotheses} espone come sono nate le ipotesi, le sette ipotesi primarie con il
+loro criterio di falsificazione e le domande esplorative.
+
+Il \autoref{chap:experiments} descrive la valutazione sperimentale: il protocollo di verifica e
+la metodologia statistica, l'infrastruttura, i dataset e le configurazioni, le metriche, il
+termine di paragone banale, gli esperimenti condotti con il collegamento alle ipotesi e lo studio
+di ablazione.
+
+Il \autoref{chap:results} analizza i risultati: la potatura che non perde nulla, il confronto
+con la riduzione di ridondanza della teoria classica, la potatura che produce il guadagno e il
+confine in cui il guadagno non si realizza, il meccanismo che li spiega, il criterio diagnostico,
+i risultati negativi e il costo.
+
+Il \autoref{chap:discussion} discute gli esiti delle ipotesi, il quadro complessivo, i limiti
+dell'evidenza e la collocazione del lavoro rispetto alla letteratura.
+
+Il \autoref{chap:defects} raccoglie i difetti e le criticità: quelli del sistema studiato, quelli
+del codice sviluppato in questo lavoro e le conseguenze generali che se ne traggono.
+
+Il \autoref{chap:conclusions} sintetizza il lavoro e ne indica gli sviluppi possibili. L'\autoref{app:reproducibility} documenta la riproducibilità dei risultati e
+l'\autoref{app:results} raccoglie le tabelle complete delle campagne.

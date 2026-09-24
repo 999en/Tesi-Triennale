@@ -1,0 +1,35 @@
+% =======================================================================================
+% Sommario
+% =======================================================================================
+\chapter*{Sommario}
+
+L'imputazione di valori mancanti basata su \emph{Relaxed Functional Dependencies} (RFD)
+affronta il problema dell'incompletezza dei dati sfruttando regole estratte dal dataset stesso.
+Il costo computazionale di questi approcci cresce con il numero di regole disponibili, e una
+parte di esse è ridondante: da qui l'interesse per il \emph{semantic pruning}, la selezione
+delle RFD effettivamente rilevanti.
+
+Questo lavoro studia il pruning semantico di un insieme di metadati applicato a \renuver{}, un
+algoritmo di imputazione basato su RFD. Dall'analisi del bytecode si derivano tre condizioni
+esatte: \Vone{}, che caratterizza le regole che possono esercitare un veto sulle imputazioni;
+\Vtwo{}, che individua una classe di regole la cui potatura è dimostrabilmente priva di effetti;
+\Vthree{}, che isola le regole provabilmente inerti. Da queste discende un teorema negativo: con
+potatura esterna, nessuna riduzione non banale può essere contemporaneamente sicura rispetto alla
+generazione dei candidati e al potere di veto.
+
+La condizione \Vtwo{} è stata verificata empiricamente su \num{1242321} terne con zero
+discrepanze, e la sua applicazione produce un output identico a quello del sistema originale su
+\num{113} configurazioni su \num{113}, su quattro famiglie di dataset (\num{111} delle tre
+famiglie principali e \num{2} di una famiglia indipendente). Il teorema separa ciò che è
+dimostrato --- la caratterizzazione delle rimozioni certificabili --- da ciò che è misurato, e
+mostra che la riduzione garantita non supera il \SI{20.9}{\percent} sui dati esaminati. Un'euristica di potatura
+aggressiva, denominata \str{A5b}, riduce le regole dell'\SI{84.2}{\percent} su Bridges migliorando
+al contempo il risultato di \num{69} imputazioni corrette e \num{72} errori in meno; sugli altri
+dataset la stessa strategia danneggia il risultato. Il lavoro identifica il meccanismo che governa
+questa differenza --- il guadagno è il prodotto della quota di imputazioni ottenute per via esatta
+e del numero di imputazioni effettuate --- e ne ricava un criterio diagnostico misurabile prima di
+potare. Su Glass e Restaurant una taratura più conservativa della medesima strategia non perde che
+una imputazione corretta su \num{97} configurazioni. Il lavoro mostra infine che la riduzione
+delle regole non implica un risparmio di tempo: la strategia che ne rimuove di più è anche quella
+che rallenta di più, e il tempo dipende dalla composizione dell'insieme potato più che dalla sua
+dimensione.

@@ -1,0 +1,698 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{breve2022renuver}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=c7da1f42431abd3de423b44e086f13c7}{%
+           family={Breve},
+           familyi={B\bibinitperiod},
+           given={Bernardo},
+           giveni={B\bibinitperiod}}}%
+        {{hash=730f4966fcc861d0fe8153a1ed6ef735}{%
+           family={Caruccio},
+           familyi={C\bibinitperiod},
+           given={Loredana},
+           giveni={L\bibinitperiod}}}%
+        {{hash=0dca1b99f0fb427603c9c1c6703212a2}{%
+           family={Deufemia},
+           familyi={D\bibinitperiod},
+           given={Vincenzo},
+           giveni={V\bibinitperiod}}}%
+        {{hash=f798c2dab5248b7cf0e052b6ee44e034}{%
+           family={Polese},
+           familyi={P\bibinitperiod},
+           given={Giuseppe},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {OpenProceedings.org}%
+      }
+      \strng{namehash}{d841f4c1c7ba2a934ae4a4b1ef28d8e4}
+      \strng{fullhash}{b41b2eb2788c7ca16989d0c798e8c465}
+      \strng{fullhashraw}{b41b2eb2788c7ca16989d0c798e8c465}
+      \strng{bibnamehash}{b41b2eb2788c7ca16989d0c798e8c465}
+      \strng{authorbibnamehash}{b41b2eb2788c7ca16989d0c798e8c465}
+      \strng{authornamehash}{d841f4c1c7ba2a934ae4a4b1ef28d8e4}
+      \strng{authorfullhash}{b41b2eb2788c7ca16989d0c798e8c465}
+      \strng{authorfullhashraw}{b41b2eb2788c7ca16989d0c798e8c465}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 25th International Conference on Extending Database Technology (EDBT)}
+      \field{issn}{2367-2005}
+      \field{series}{Advances in Database Technology}
+      \field{title}{{RENUVER}: A Missing Value Imputation Algorithm based on Relaxed Functional Dependencies}
+      \field{year}{2022}
+      \field{pages}{52\bibrangedash 64}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.5441/002/edbt.2022.05
+      \endverb
+    \endentry
+    \entry{wang1996beyond}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=8e0c9622e0241ec9e74f173e87914994}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Richard\bibnamedelima Y.},
+           giveni={R\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=769f5dc46fa1ff64c22ea3168ff73e2d}{%
+           family={Strong},
+           familyi={S\bibinitperiod},
+           given={Diane\bibnamedelima M.},
+           giveni={D\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \strng{namehash}{25484529b35cf893a82ea2496013162f}
+      \strng{fullhash}{25484529b35cf893a82ea2496013162f}
+      \strng{fullhashraw}{25484529b35cf893a82ea2496013162f}
+      \strng{bibnamehash}{25484529b35cf893a82ea2496013162f}
+      \strng{authorbibnamehash}{25484529b35cf893a82ea2496013162f}
+      \strng{authornamehash}{25484529b35cf893a82ea2496013162f}
+      \strng{authorfullhash}{25484529b35cf893a82ea2496013162f}
+      \strng{authorfullhashraw}{25484529b35cf893a82ea2496013162f}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Management Information Systems}
+      \field{number}{4}
+      \field{title}{Beyond Accuracy: What Data Quality Means to Data Consumers}
+      \field{volume}{12}
+      \field{year}{1996}
+      \field{pages}{5\bibrangedash 33}
+      \range{pages}{29}
+      \verb{doi}
+      \verb 10.1080/07421222.1996.11518099
+      \endverb
+    \endentry
+    \entry{batini2016data}{book}{}{}
+      \name{author}{2}{}{%
+        {{hash=a1fe1314f667338ec159636486bb1d78}{%
+           family={Batini},
+           familyi={B\bibinitperiod},
+           given={Carlo},
+           giveni={C\bibinitperiod}}}%
+        {{hash=67cfddf3fcd86a078af24a252f642928}{%
+           family={Scannapieco},
+           familyi={S\bibinitperiod},
+           given={Monica},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{59f00038ac1f5ce418d9b6a20405335e}
+      \strng{fullhash}{59f00038ac1f5ce418d9b6a20405335e}
+      \strng{fullhashraw}{59f00038ac1f5ce418d9b6a20405335e}
+      \strng{bibnamehash}{59f00038ac1f5ce418d9b6a20405335e}
+      \strng{authorbibnamehash}{59f00038ac1f5ce418d9b6a20405335e}
+      \strng{authornamehash}{59f00038ac1f5ce418d9b6a20405335e}
+      \strng{authorfullhash}{59f00038ac1f5ce418d9b6a20405335e}
+      \strng{authorfullhashraw}{59f00038ac1f5ce418d9b6a20405335e}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{series}{Data-Centric Systems and Applications}
+      \field{title}{Data and Information Quality: Dimensions, Principles and Techniques}
+      \field{year}{2016}
+      \verb{doi}
+      \verb 10.1007/978-3-319-24106-7
+      \endverb
+    \endentry
+    \entry{rubin1976inference}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=49a367b6280de8a239f8bbdd573f996f}{%
+           family={Rubin},
+           familyi={R\bibinitperiod},
+           given={Donald\bibnamedelima B.},
+           giveni={D\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+      }
+      \strng{namehash}{49a367b6280de8a239f8bbdd573f996f}
+      \strng{fullhash}{49a367b6280de8a239f8bbdd573f996f}
+      \strng{fullhashraw}{49a367b6280de8a239f8bbdd573f996f}
+      \strng{bibnamehash}{49a367b6280de8a239f8bbdd573f996f}
+      \strng{authorbibnamehash}{49a367b6280de8a239f8bbdd573f996f}
+      \strng{authornamehash}{49a367b6280de8a239f8bbdd573f996f}
+      \strng{authorfullhash}{49a367b6280de8a239f8bbdd573f996f}
+      \strng{authorfullhashraw}{49a367b6280de8a239f8bbdd573f996f}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Biometrika}
+      \field{number}{3}
+      \field{title}{Inference and Missing Data}
+      \field{volume}{63}
+      \field{year}{1976}
+      \field{pages}{581\bibrangedash 592}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1093/biomet/63.3.581
+      \endverb
+    \endentry
+    \entry{little2019statistical}{book}{}{}
+      \name{author}{2}{}{%
+        {{hash=c19d287a8a20e4de387422e826477fb4}{%
+           family={Little},
+           familyi={L\bibinitperiod},
+           given={Roderick\bibnamedelimb J.\bibnamedelimi A.},
+           giveni={R\bibinitperiod\bibinitdelim J\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=49a367b6280de8a239f8bbdd573f996f}{%
+           family={Rubin},
+           familyi={R\bibinitperiod},
+           given={Donald\bibnamedelima B.},
+           giveni={D\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Wiley}%
+      }
+      \strng{namehash}{0a978082b8259bef280ba31099591e27}
+      \strng{fullhash}{0a978082b8259bef280ba31099591e27}
+      \strng{fullhashraw}{0a978082b8259bef280ba31099591e27}
+      \strng{bibnamehash}{0a978082b8259bef280ba31099591e27}
+      \strng{authorbibnamehash}{0a978082b8259bef280ba31099591e27}
+      \strng{authornamehash}{0a978082b8259bef280ba31099591e27}
+      \strng{authorfullhash}{0a978082b8259bef280ba31099591e27}
+      \strng{authorfullhashraw}{0a978082b8259bef280ba31099591e27}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{3}
+      \field{title}{Statistical Analysis with Missing Data}
+      \field{year}{2019}
+    \endentry
+    \entry{vanbuuren2011mice}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=4c5742dea00885b0aa447b833696d174}{%
+           family={Buuren},
+           familyi={B\bibinitperiod},
+           given={Stef},
+           giveni={S\bibinitperiod},
+           prefix={van},
+           prefixi={v\bibinitperiod}}}%
+        {{hash=608d0e9a1fa5297e662ddcf0f605c2ab}{%
+           family={Groothuis-Oudshoorn},
+           familyi={G\bibinithyphendelim O\bibinitperiod},
+           given={Karin},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{089d1d8760fae91d5380d09f586254e7}
+      \strng{fullhash}{089d1d8760fae91d5380d09f586254e7}
+      \strng{fullhashraw}{089d1d8760fae91d5380d09f586254e7}
+      \strng{bibnamehash}{089d1d8760fae91d5380d09f586254e7}
+      \strng{authorbibnamehash}{089d1d8760fae91d5380d09f586254e7}
+      \strng{authornamehash}{089d1d8760fae91d5380d09f586254e7}
+      \strng{authorfullhash}{089d1d8760fae91d5380d09f586254e7}
+      \strng{authorfullhashraw}{089d1d8760fae91d5380d09f586254e7}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Statistical Software}
+      \field{number}{3}
+      \field{title}{mice: Multivariate Imputation by Chained Equations in {R}}
+      \field{volume}{45}
+      \field{year}{2011}
+      \field{pages}{1\bibrangedash 67}
+      \range{pages}{67}
+      \verb{doi}
+      \verb 10.18637/jss.v045.i03
+      \endverb
+    \endentry
+    \entry{stekhoven2012missforest}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=fe8c04fb43b876964c2f03b4e891b637}{%
+           family={Stekhoven},
+           familyi={S\bibinitperiod},
+           given={Daniel\bibnamedelima J.},
+           giveni={D\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=73b8ae79083852e052f5bd5f82021408}{%
+           family={Bühlmann},
+           familyi={B\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{32c90ca3655f80cecc006ea5c9a1e973}
+      \strng{fullhash}{32c90ca3655f80cecc006ea5c9a1e973}
+      \strng{fullhashraw}{32c90ca3655f80cecc006ea5c9a1e973}
+      \strng{bibnamehash}{32c90ca3655f80cecc006ea5c9a1e973}
+      \strng{authorbibnamehash}{32c90ca3655f80cecc006ea5c9a1e973}
+      \strng{authornamehash}{32c90ca3655f80cecc006ea5c9a1e973}
+      \strng{authorfullhash}{32c90ca3655f80cecc006ea5c9a1e973}
+      \strng{authorfullhashraw}{32c90ca3655f80cecc006ea5c9a1e973}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Bioinformatics}
+      \field{number}{1}
+      \field{title}{{MissForest}---non-parametric missing value imputation for mixed-type data}
+      \field{volume}{28}
+      \field{year}{2012}
+      \field{pages}{112\bibrangedash 118}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1093/bioinformatics/btr597
+      \endverb
+    \endentry
+    \entry{troyanskaya2001missing}{article}{}{}
+      \name{author}{8}{}{%
+        {{hash=c902f3a477bd97fab31b734320db003d}{%
+           family={Troyanskaya},
+           familyi={T\bibinitperiod},
+           given={Olga},
+           giveni={O\bibinitperiod}}}%
+        {{hash=bf3df073a74b051edfdab93b9db3eca5}{%
+           family={Cantor},
+           familyi={C\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+        {{hash=138dff38fe1e9c77884365c751029ac8}{%
+           family={Sherlock},
+           familyi={S\bibinitperiod},
+           given={Gavin},
+           giveni={G\bibinitperiod}}}%
+        {{hash=ca96309dd140745132c0ce1b20c72cac}{%
+           family={Brown},
+           familyi={B\bibinitperiod},
+           given={Pat},
+           giveni={P\bibinitperiod}}}%
+        {{hash=0cb8fe4210baa81c4b0e67913b4d2768}{%
+           family={Hastie},
+           familyi={H\bibinitperiod},
+           given={Trevor},
+           giveni={T\bibinitperiod}}}%
+        {{hash=88eea600247d798f8b2ce0b2dc614492}{%
+           family={Tibshirani},
+           familyi={T\bibinitperiod},
+           given={Robert},
+           giveni={R\bibinitperiod}}}%
+        {{hash=eee0770bf66c6a70bef04b32b803b2cd}{%
+           family={Botstein},
+           familyi={B\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=c3aadd94d192897f65d92966a3310e04}{%
+           family={Altman},
+           familyi={A\bibinitperiod},
+           given={Russ\bibnamedelima B.},
+           giveni={R\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+      }
+      \strng{namehash}{f8f85275ecda14a86b60dcadd439018c}
+      \strng{fullhash}{32b153fa1c0abe7d8d2b61afdc2d5775}
+      \strng{fullhashraw}{32b153fa1c0abe7d8d2b61afdc2d5775}
+      \strng{bibnamehash}{f8f85275ecda14a86b60dcadd439018c}
+      \strng{authorbibnamehash}{f8f85275ecda14a86b60dcadd439018c}
+      \strng{authornamehash}{f8f85275ecda14a86b60dcadd439018c}
+      \strng{authorfullhash}{32b153fa1c0abe7d8d2b61afdc2d5775}
+      \strng{authorfullhashraw}{32b153fa1c0abe7d8d2b61afdc2d5775}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Bioinformatics}
+      \field{number}{6}
+      \field{title}{Missing value estimation methods for {DNA} microarrays}
+      \field{volume}{17}
+      \field{year}{2001}
+      \field{pages}{520\bibrangedash 525}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1093/bioinformatics/17.6.520
+      \endverb
+    \endentry
+    \entry{rekatsinas2017holoclean}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=1832f93b955f795af801e5354c196b17}{%
+           family={Rekatsinas},
+           familyi={R\bibinitperiod},
+           given={Theodoros},
+           giveni={T\bibinitperiod}}}%
+        {{hash=b07b0bbc3bf25b2b9aca5019725ee945}{%
+           family={Chu},
+           familyi={C\bibinitperiod},
+           given={Xu},
+           giveni={X\bibinitperiod}}}%
+        {{hash=6a07be827453db435d6fa8464f9b4951}{%
+           family={Ilyas},
+           familyi={I\bibinitperiod},
+           given={Ihab\bibnamedelima F.},
+           giveni={I\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+        {{hash=eb1f5a2ba08ea12db36c871fe601f5f1}{%
+           family={Ré},
+           familyi={R\bibinitperiod},
+           given={Christopher},
+           giveni={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{aad542536446c9ab96a51023e05c5a5b}
+      \strng{fullhash}{4026b55848f517ed0756687c1a31344f}
+      \strng{fullhashraw}{4026b55848f517ed0756687c1a31344f}
+      \strng{bibnamehash}{4026b55848f517ed0756687c1a31344f}
+      \strng{authorbibnamehash}{4026b55848f517ed0756687c1a31344f}
+      \strng{authornamehash}{aad542536446c9ab96a51023e05c5a5b}
+      \strng{authorfullhash}{4026b55848f517ed0756687c1a31344f}
+      \strng{authorfullhashraw}{4026b55848f517ed0756687c1a31344f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Proceedings of the VLDB Endowment}
+      \field{number}{11}
+      \field{title}{{HoloClean}: Holistic Data Repairs with Probabilistic Integrity Constraints}
+      \field{volume}{10}
+      \field{year}{2017}
+      \field{pages}{1190\bibrangedash 1201}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.14778/3137628.3137650
+      \endverb
+    \endentry
+    \entry{fan2012foundations}{book}{}{}
+      \name{author}{2}{}{%
+        {{hash=885d99bc571d8b5af19612a7c9293f6b}{%
+           family={Fan},
+           familyi={F\bibinitperiod},
+           given={Wenfei},
+           giveni={W\bibinitperiod}}}%
+        {{hash=6ee35c03c19a5179c882807e2090d149}{%
+           family={Geerts},
+           familyi={G\bibinitperiod},
+           given={Floris},
+           giveni={F\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Morgan \& Claypool}%
+      }
+      \strng{namehash}{bd8e51ecd43b55512bc5e94ea6061395}
+      \strng{fullhash}{bd8e51ecd43b55512bc5e94ea6061395}
+      \strng{fullhashraw}{bd8e51ecd43b55512bc5e94ea6061395}
+      \strng{bibnamehash}{bd8e51ecd43b55512bc5e94ea6061395}
+      \strng{authorbibnamehash}{bd8e51ecd43b55512bc5e94ea6061395}
+      \strng{authornamehash}{bd8e51ecd43b55512bc5e94ea6061395}
+      \strng{authorfullhash}{bd8e51ecd43b55512bc5e94ea6061395}
+      \strng{authorfullhashraw}{bd8e51ecd43b55512bc5e94ea6061395}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{series}{Synthesis Lectures on Data Management}
+      \field{title}{Foundations of Data Quality Management}
+      \field{year}{2012}
+    \endentry
+    \entry{caruccio2016rfd}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=730f4966fcc861d0fe8153a1ed6ef735}{%
+           family={Caruccio},
+           familyi={C\bibinitperiod},
+           given={Loredana},
+           giveni={L\bibinitperiod}}}%
+        {{hash=0dca1b99f0fb427603c9c1c6703212a2}{%
+           family={Deufemia},
+           familyi={D\bibinitperiod},
+           given={Vincenzo},
+           giveni={V\bibinitperiod}}}%
+        {{hash=f798c2dab5248b7cf0e052b6ee44e034}{%
+           family={Polese},
+           familyi={P\bibinitperiod},
+           given={Giuseppe},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{c002b9b058b80f3f0bbae1d3eecb8cbd}
+      \strng{fullhash}{c002b9b058b80f3f0bbae1d3eecb8cbd}
+      \strng{fullhashraw}{c002b9b058b80f3f0bbae1d3eecb8cbd}
+      \strng{bibnamehash}{c002b9b058b80f3f0bbae1d3eecb8cbd}
+      \strng{authorbibnamehash}{c002b9b058b80f3f0bbae1d3eecb8cbd}
+      \strng{authornamehash}{c002b9b058b80f3f0bbae1d3eecb8cbd}
+      \strng{authorfullhash}{c002b9b058b80f3f0bbae1d3eecb8cbd}
+      \strng{authorfullhashraw}{c002b9b058b80f3f0bbae1d3eecb8cbd}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Transactions on Knowledge and Data Engineering}
+      \field{number}{1}
+      \field{title}{Relaxed Functional Dependencies---A Survey of Approaches}
+      \field{volume}{28}
+      \field{year}{2016}
+      \field{pages}{147\bibrangedash 165}
+      \range{pages}{19}
+      \verb{doi}
+      \verb 10.1109/TKDE.2015.2472010
+      \endverb
+    \endentry
+    \entry{armstrong1974dependency}{inproceedings}{}{}
+      \name{author}{1}{}{%
+        {{hash=741c6c50b49313fe23cc9ea92c675157}{%
+           family={Armstrong},
+           familyi={A\bibinitperiod},
+           given={William\bibnamedelima W.},
+           giveni={W\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {North-Holland}%
+      }
+      \strng{namehash}{741c6c50b49313fe23cc9ea92c675157}
+      \strng{fullhash}{741c6c50b49313fe23cc9ea92c675157}
+      \strng{fullhashraw}{741c6c50b49313fe23cc9ea92c675157}
+      \strng{bibnamehash}{741c6c50b49313fe23cc9ea92c675157}
+      \strng{authorbibnamehash}{741c6c50b49313fe23cc9ea92c675157}
+      \strng{authornamehash}{741c6c50b49313fe23cc9ea92c675157}
+      \strng{authorfullhash}{741c6c50b49313fe23cc9ea92c675157}
+      \strng{authorfullhashraw}{741c6c50b49313fe23cc9ea92c675157}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Information Processing 74: Proceedings of the {IFIP} Congress}
+      \field{title}{Dependency Structures of Data Base Relationships}
+      \field{year}{1974}
+      \field{pages}{580\bibrangedash 583}
+      \range{pages}{4}
+    \endentry
+    \entry{maier1983theory}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=44d2e85095769540b86df536eb7fb7d4}{%
+           family={Maier},
+           familyi={M\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Computer Science Press}%
+      }
+      \strng{namehash}{44d2e85095769540b86df536eb7fb7d4}
+      \strng{fullhash}{44d2e85095769540b86df536eb7fb7d4}
+      \strng{fullhashraw}{44d2e85095769540b86df536eb7fb7d4}
+      \strng{bibnamehash}{44d2e85095769540b86df536eb7fb7d4}
+      \strng{authorbibnamehash}{44d2e85095769540b86df536eb7fb7d4}
+      \strng{authornamehash}{44d2e85095769540b86df536eb7fb7d4}
+      \strng{authorfullhash}{44d2e85095769540b86df536eb7fb7d4}
+      \strng{authorfullhashraw}{44d2e85095769540b86df536eb7fb7d4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{The Theory of Relational Databases}
+      \field{year}{1983}
+    \endentry
+    \entry{levenshtein1966binary}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=2025f9e60b2af345aec0aa76da2eac3d}{%
+           family={Levenshtein},
+           familyi={L\bibinitperiod},
+           given={Vladimir\bibnamedelima I.},
+           giveni={V\bibinitperiod\bibinitdelim I\bibinitperiod}}}%
+      }
+      \strng{namehash}{2025f9e60b2af345aec0aa76da2eac3d}
+      \strng{fullhash}{2025f9e60b2af345aec0aa76da2eac3d}
+      \strng{fullhashraw}{2025f9e60b2af345aec0aa76da2eac3d}
+      \strng{bibnamehash}{2025f9e60b2af345aec0aa76da2eac3d}
+      \strng{authorbibnamehash}{2025f9e60b2af345aec0aa76da2eac3d}
+      \strng{authornamehash}{2025f9e60b2af345aec0aa76da2eac3d}
+      \strng{authorfullhash}{2025f9e60b2af345aec0aa76da2eac3d}
+      \strng{authorfullhashraw}{2025f9e60b2af345aec0aa76da2eac3d}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Soviet Physics Doklady}
+      \field{title}{Binary Codes Capable of Correcting Deletions, Insertions and Reversals}
+      \field{volume}{10}
+      \field{year}{1966}
+      \field{pages}{707\bibrangedash 710}
+      \range{pages}{4}
+    \endentry
+    \entry{trummer2024llmcorrelations}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=aa465be9383096e3e84d0a2f6754c00c}{%
+           family={Trummer},
+           familyi={T\bibinitperiod},
+           given={Immanuel},
+           giveni={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{aa465be9383096e3e84d0a2f6754c00c}
+      \strng{fullhash}{aa465be9383096e3e84d0a2f6754c00c}
+      \strng{fullhashraw}{aa465be9383096e3e84d0a2f6754c00c}
+      \strng{bibnamehash}{aa465be9383096e3e84d0a2f6754c00c}
+      \strng{authorbibnamehash}{aa465be9383096e3e84d0a2f6754c00c}
+      \strng{authornamehash}{aa465be9383096e3e84d0a2f6754c00c}
+      \strng{authorfullhash}{aa465be9383096e3e84d0a2f6754c00c}
+      \strng{authorfullhashraw}{aa465be9383096e3e84d0a2f6754c00c}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Proceedings of the VLDB Endowment}
+      \field{note}{Cornell Database Group}
+      \field{title}{Can Large Language Models Predict Data Correlations from Column Names?}
+      \field{year}{2024}
+    \endentry
+    \entry{freire2024llmdiscovery}{article}{}{}
+      \name{author}{9}{}{%
+        {{hash=6cbdf8a1c60367f1a70356c1a7ab05d3}{%
+           family={Freire},
+           familyi={F\bibinitperiod},
+           given={Juliana},
+           giveni={J\bibinitperiod}}}%
+        {{hash=45d4c2f2b8f689248a447847bc31c16d}{%
+           family={Fan},
+           familyi={F\bibinitperiod},
+           given={Grace},
+           giveni={G\bibinitperiod}}}%
+        {{hash=420a618ecc626f3c19a1a8d6e9566a9c}{%
+           family={Feuer},
+           familyi={F\bibinitperiod},
+           given={Benjamin},
+           giveni={B\bibinitperiod}}}%
+        {{hash=77d82eb77136befdcdd622c63b90433b}{%
+           family={Koutras},
+           familyi={K\bibinitperiod},
+           given={Christos},
+           giveni={C\bibinitperiod}}}%
+        {{hash=4460491b1fdb7f49c06c0fa378ce11aa}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Yurong},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=d1a284f5d88d00360ddb613ca895354c}{%
+           family={Pena},
+           familyi={P\bibinitperiod},
+           given={Eduardo},
+           giveni={E\bibinitperiod}}}%
+        {{hash=b6ca0e9f6e4f89e9df421d0ba3a43aa9}{%
+           family={Santos},
+           familyi={S\bibinitperiod},
+           given={Aécio},
+           giveni={A\bibinitperiod}}}%
+        {{hash=cf7279c3e42c2c33f0d5031a96266545}{%
+           family={Silva},
+           familyi={S\bibinitperiod},
+           given={Cláudio},
+           giveni={C\bibinitperiod}}}%
+        {{hash=6df2ed66818d9e625d8460f1200947bc}{%
+           family={Wu},
+           familyi={W\bibinitperiod},
+           given={Eden},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{b60f9b8199b3d7d9cf1f16a3609a949a}
+      \strng{fullhash}{89c874d06d675ee89f623d9507e94b8c}
+      \strng{fullhashraw}{89c874d06d675ee89f623d9507e94b8c}
+      \strng{bibnamehash}{b60f9b8199b3d7d9cf1f16a3609a949a}
+      \strng{authorbibnamehash}{b60f9b8199b3d7d9cf1f16a3609a949a}
+      \strng{authornamehash}{b60f9b8199b3d7d9cf1f16a3609a949a}
+      \strng{authorfullhash}{89c874d06d675ee89f623d9507e94b8c}
+      \strng{authorfullhashraw}{89c874d06d675ee89f623d9507e94b8c}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{SIGMOD Record}
+      \field{note}{New York University}
+      \field{title}{Large Language Models for Data Discovery and Integration: Challenges and Opportunities}
+      \field{year}{2024}
+    \endentry
+    \entry{wilcoxon1945individual}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=405b308b1e8e33ef3275bf6cb9c9b281}{%
+           family={Wilcoxon},
+           familyi={W\bibinitperiod},
+           given={Frank},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{405b308b1e8e33ef3275bf6cb9c9b281}
+      \strng{fullhash}{405b308b1e8e33ef3275bf6cb9c9b281}
+      \strng{fullhashraw}{405b308b1e8e33ef3275bf6cb9c9b281}
+      \strng{bibnamehash}{405b308b1e8e33ef3275bf6cb9c9b281}
+      \strng{authorbibnamehash}{405b308b1e8e33ef3275bf6cb9c9b281}
+      \strng{authornamehash}{405b308b1e8e33ef3275bf6cb9c9b281}
+      \strng{authorfullhash}{405b308b1e8e33ef3275bf6cb9c9b281}
+      \strng{authorfullhashraw}{405b308b1e8e33ef3275bf6cb9c9b281}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Biometrics Bulletin}
+      \field{number}{6}
+      \field{title}{Individual Comparisons by Ranking Methods}
+      \field{volume}{1}
+      \field{year}{1945}
+      \field{pages}{80\bibrangedash 83}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.2307/3001968
+      \endverb
+    \endentry
+    \entry{holm1979simple}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=23b6a8c4d3d9710bb3b84d15d65dc86e}{%
+           family={Holm},
+           familyi={H\bibinitperiod},
+           given={Sture},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{23b6a8c4d3d9710bb3b84d15d65dc86e}
+      \strng{fullhash}{23b6a8c4d3d9710bb3b84d15d65dc86e}
+      \strng{fullhashraw}{23b6a8c4d3d9710bb3b84d15d65dc86e}
+      \strng{bibnamehash}{23b6a8c4d3d9710bb3b84d15d65dc86e}
+      \strng{authorbibnamehash}{23b6a8c4d3d9710bb3b84d15d65dc86e}
+      \strng{authornamehash}{23b6a8c4d3d9710bb3b84d15d65dc86e}
+      \strng{authorfullhash}{23b6a8c4d3d9710bb3b84d15d65dc86e}
+      \strng{authorfullhashraw}{23b6a8c4d3d9710bb3b84d15d65dc86e}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Scandinavian Journal of Statistics}
+      \field{number}{2}
+      \field{title}{A Simple Sequentially Rejective Multiple Test Procedure}
+      \field{volume}{6}
+      \field{year}{1979}
+      \field{pages}{65\bibrangedash 70}
+      \range{pages}{6}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

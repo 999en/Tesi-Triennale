@@ -1,0 +1,175 @@
+\documentclass[
+    a4paper,
+    %uninadraft,
+    %colorlinks,
+    blacklinks,
+    %palatino,
+    libertine,
+    %mathpazo,
+    %tgschola,
+    %tgscholamathpazo,
+    %alegreya
+]{uninathesis}
+
+%\AtBeginDocument{\addtocontents{toc}{\protect\thispagestyle{empty}}} %remove page number from toc
+
+% ---------------------------------------------------------------------------------------
+% Lingua: la tesi e' in italiano.
+% ---------------------------------------------------------------------------------------
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+
+% Math
+\RequirePackage{mathtools}
+\RequirePackage{mathrsfs} %need this for mathscr
+\let\openbox\relax
+\RequirePackage{amsthm}
+\RequirePackage{stmaryrd} %for \llbracket
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Teorema}
+\newtheorem{proposition}[theorem]{Proposizione}
+\newtheorem{corollary}[theorem]{Corollario}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definizione}
+\newtheorem{example}[theorem]{Esempio}
+\newtheorem{observation}[theorem]{Osservazione}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Nota}
+
+% Tikz - may be removed if unneeded
+\RequirePackage{tikz}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.16}
+\usetikzlibrary{positioning,automata,calc,fit,shapes,backgrounds,arrows.meta}
+\usepackage{makecell}
+\usepackage{multirow}   % celle su piu' righe nelle tabelle
+
+% Miscellanea Packages
+\RequirePackage[utf8]{inputenc}
+\usepackage{ marvosym } %/Lightning
+\usepackage{subcaption} %subfigures
+\usepackage{booktabs}   % tabelle professionali: \toprule \midrule \bottomrule
+\usepackage{longtable}  % tabelle lunghe, che si spezzano su piu' pagine (appendice B)
+\usepackage{xurl}      % permette di spezzare le URL lunghe in bibliografia
+\usepackage{siunitx}    % numeri allineati e unita' di misura
+\sisetup{group-separator={\,},group-minimum-digits=4,output-decimal-marker={,}}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+% read configuration file
+\input{_utils/macro.tex} %can write your macros here
+
+% Bibliography
+\RequirePackage{csquotes}
+\RequirePackage[sorting=none,maxbibnames=4,backend=biber]{biblatex}
+\addbibresource{_bib/bibliography.bib}
+% biblatex: consente di spezzare le URL e i DOI anche in corrispondenza di cifre e lettere,
+% evitando che una voce lunga sbordi dal margine destro.
+\setcounter{biburlnumpenalty}{100}
+\setcounter{biburlucpenalty}{100}
+\setcounter{biburllcpenalty}{100}
+
+% Front page (package uninafrontespizio)
+% ---------------------------------------------------------------------------------------
+% ATTENZIONE: i campi contrassegnati con  <<<  vanno completati a cura del candidato.
+% ---------------------------------------------------------------------------------------
+\Universita{Università degli Studi di Napoli Federico II}
+\Facolta{Scuola Politecnica e delle Scienze di Base}
+\Dipartimento{Dipartimento di Ingegneria Elettrica e Tecnologie dell'Informazione}
+\CorsoDiLaurea{Corso di Laurea in Informatica}                       % <<< triennale
+\AnnoAccademico{2025--2026}                                          % <<< da confermare
+\Titolo{Semantic Pruning di metadati per l'imputazione di valori mancanti:\\ analisi, metodologia e valutazione su RENUVER}
+\Relatore{Prof.\ \textsc{Gennaro Ventrone}}                              % <<< da completare
+\RelatoreLabel{Relatore}
+\Candidato{\textsc{Gennaro Ventrone}}                                    % <<< da completare
+\Matricola{N86004074}                                                   % <<< da completare
+\Logo{logo-federico-II.pdf}
+\LogoWidth{3.5cm}
+\LogoPosition{below-uni}
+
+\usepackage[title,titletoc]{appendix}
+
+% ---------------------------------------------------------------------------------------
+% Riferimenti incrociati in italiano.
+% hyperref nomina le unita' in inglese ("Table", "section", "chapter", "Appendix",
+% "paragraph") e le traduzioni di babel non le coprono tutte: senza queste ridefinizioni
+% il testo italiano conterrebbe "la Table 5.2" o "nel chapter 6".
+% ---------------------------------------------------------------------------------------
+\addto\captionsitalian{%
+    \def\chapterautorefname{capitolo}%
+    \def\sectionautorefname{sezione}%
+    \def\subsectionautorefname{sottosezione}%
+    \def\paragraphautorefname{paragrafo}%
+    \def\tableautorefname{Tabella}%
+    \def\figureautorefname{Figura}%
+    \def\appendixautorefname{Appendice}%
+}
+
+% Metadati del PDF
+\hypersetup{
+    pdftitle={Semantic Pruning di metadati per l'imputazione di valori mancanti},
+    pdfauthor={Nome Cognome},
+    pdfsubject={Tesi di Laurea in Informatica}
+}
+
+\begin{document}
+
+    \pagestyle{empty}
+    \frontmatter
+    \makefrontespizio~\clearpage
+
+    \pagestyle{backmatter}
+    \input{_chapters/0-abstract.tex}
+
+    \clearpage
+    \tableofcontents
+
+    \mainmatter
+
+    \input{_chapters/0-introduction.tex}
+
+    \newpage\pagestyle{main}
+
+    \input{_chapters/1-background.tex}
+
+    \input{_chapters/2-renuver.tex}
+
+    \input{_chapters/3-methodology.tex}
+
+    \input{_chapters/4-theory.tex}
+
+    \input{_chapters/5-design.tex}
+
+    \input{_chapters/6-experiments.tex}
+
+    \input{_chapters/7-results.tex}
+
+    \input{_chapters/8-discussion.tex}
+
+    \input{_chapters/9-defects.tex}
+
+    \input{_chapters/10-conclusions.tex}
+
+    % NOTA: \pagestyle e' locale al gruppo corrente. Posto qui varrebbe anche per l'ultima
+    % pagina del capitolo 9, che viene stampata prima di \begin{appendices}; posto dentro
+    % l'ambiente non varrebbe per l'ultima pagina dell'appendice. Il cambio di stile e' quindi
+    % fatto in modo GLOBALE all'inizio della prima appendice, dopo la pagina di apertura.
+    \begin{appendices}
+        \input{_chapters/A-appendix-reproducibility.tex}
+        \input{_chapters/B-appendix-results.tex}
+    \end{appendices}
+
+    % NOTA: la spedizione dell'ultima pagina dell'appendice avviene al \cleardoublepage interno
+    % di \printbibliography; se il cambio di stile precedesse quella spedizione, l'ultima pagina
+    % dell'appendice porterebbe l'intestazione della bibliografia. Il \cleardoublepage esplicito
+    % la spedisce prima del cambio.
+    \newpage
+    \cleardoublepage
+    \pagestyle{backmatter}
+    \printbibliography[heading=bibintoc]
+
+\end{document}

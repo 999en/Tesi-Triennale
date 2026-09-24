@@ -1,0 +1,90 @@
+\newpage\pagestyle{conclusions}
+
+\unnumberedchapter{Conclusioni e sviluppi futuri}
+\label{chap:conclusions}
+
+\unnumberedsection{Sintesi del lavoro}
+
+Il lavoro è partito da una domanda operativa: se sia possibile selezionare le regole rilevanti in
+un insieme di metadati impiegato per l'imputazione di valori mancanti, riducendo il costo
+computazionale senza degradare la qualità delle imputazioni. Il sistema studiato, \renuver{},
+riceve le regole come input esterno, e la selezione è stata quindi affrontata nella forma di
+\emph{preprocessing}: riscrivere il file delle regole, senza toccare l'eseguibile.
+
+La risposta a quella domanda si è articolata in tre passaggi. Il primo è stato la ricostruzione
+del comportamento del sistema, per il quale non erano disponibili i sorgenti: l'analisi del
+bytecode ha mostrato che una regola partecipa a due procedure con requisiti opposti --- la
+generazione dei candidati e la verifica dei veti --- e che nulla, nel formato del file, distingue
+i due ruoli. Il secondo passaggio è stato la derivazione delle condizioni esatte di potatura che
+ne discendono, e del risultato negativo che ne consegue. Il terzo è stato la misurazione
+sistematica dell'effetto delle strategie sviluppate, condotta su tre famiglie di dataset per un
+totale di \num{1618} esecuzioni in configurazione potata.
+
+Alla domanda iniziale il lavoro risponde su tre piani distinti, che conviene richiamare in chiusura
+senza ripetere l'analisi: la \emph{riduzione garantita} non può superare il \SI{20.9}{\percent}
+sui dataset esaminati, e il limite è del criterio e non dell'implementazione
+(\autoref{chap:theory}); la \emph{qualità} può migliorare, ma soltanto dove la composizione delle
+imputazioni lascia spazio al miglioramento e dove la copertura non cala, come mostra il confronto
+fra Bridges e le altre famiglie (\autoref{chap:results}); il \emph{tempo} non segue la riduzione,
+perché dipende da quali regole sopravvivono e non da quante (\autoref{sec:res-cost}). Le tre
+risposte sono riassunte nella tabella della \autoref{sec:research-question} e discusse nel
+\autoref{chap:discussion}, dove sono raccolti anche gli esiti delle ipotesi e i limiti
+dell'evidenza.
+
+\unnumberedsection{Possibili sviluppi}\label{sec:future-work}
+
+\paragraph{Riscrivere le regole invece di rimuoverle.}
+Il teorema negativo delimita le trasformazioni che \emph{eliminano} regole operando sul solo file.
+Una trasformazione che riscriva le regole --- restringendo o allargando i lati sinistri, correggendo
+le soglie, fondendo più regole in una --- non ricade in quel limite, e la condizione \Vtwo{} mostra
+del resto che una regola può essere eliminata quando il suo contenuto informativo è conservato da
+un'altra: la stessa conservazione potrebbe essere cercata per via sintattica anziché per
+soppressione. È la direzione che più probabilmente consente di superare il tetto del
+\SI{20.9}{\percent} senza rinunciare alla garanzia.
+
+\paragraph{Completezza della condizione di copertura.}
+La condizione \Vtwo{} è sufficiente ma non necessaria: stabilire se esistano altre classi di
+regole il cui veto è implicato da una regola sopravvissuta --- e se siano decidibili con
+l'informazione disponibile --- amplierebbe la portata quantitativa del risultato senza cambiarne la
+natura. Il problema è aperto e riguarda la teoria delle dipendenze rilassate, non
+l'implementazione.
+
+\paragraph{Verificare il meccanismo del costo.}
+L'ipotesi che il rallentamento osservato dipenda dalla perdita della scorciatoia esatta non è
+verificata. Isolare il percorso della scorciatoia con la strumentazione e contare quante celle lo
+impiegano, prima e dopo la potatura, è un esperimento circoscritto che trasformerebbe una
+spiegazione plausibile in un dato, e che consentirebbe di prevedere il tempo di una strategia
+oltre che la sua qualità.
+
+\paragraph{Ottimizzare il percorso dei veti.}
+La caratterizzazione del costo indica una direzione precisa e diversa da quella seguita finora.
+La verifica dei veti esegue \num{354809} scansioni del dataset su \num{71} tuple distinte: la
+circostanza suggerisce che il verdetto per coppia (regola, tupla) sia memoizzabile. Un
+\emph{indice} sulle colonne del dataset, o un ordinamento delle regole che incontri presto quelle
+che violano, sono direzioni alternative. Si tratta di interventi che richiedono la modifica del
+sistema, ora disponibile come possibilità ma non ancora sperimentata su questo fronte.
+
+\paragraph{Un teorema lato generazione.}
+La condizione \Vtwo{} copre il ruolo di veto. Per il ruolo generativo non si dispone di una
+condizione sufficiente analoga: la strategia \str{score-argmin} è esatta rispetto alla generazione
+ma calcola l'argomento del minimo sull'insieme \emph{originale}, e la sua esattezza decade quando
+altre regole sono state rimosse. Una condizione che garantisca l'invarianza dell'argomento del
+minimo \emph{dopo} altre rimozioni colmerebbe la lacuna e renderebbe componibili i due criteri.
+
+\paragraph{Misurare l'esercizio effettivo dei veti.}
+La politica di tutela dei veti impiega un indice di rischio che, come si è mostrato, è
+anti-correlato con la rilevanza. La sua sostituzione con una misura del numero di veti
+effettivamente esercitati a runtime --- ottenibile dalla strumentazione già disponibile ---
+consentirebbe di sostituire la stima con un dato.
+
+\paragraph{Validare il criterio diagnostico su una famiglia indipendente.}
+Il criterio della \autoref{sec:diagnostic} è stato derivato su tre famiglie e non è stato
+sottoposto a validazione prospettica. Una famiglia con quota esatta intermedia e poche regole
+costituirebbe il test decisivo.
+
+Il risultato di questo lavoro non è una strategia di potatura che funzioni ovunque: è la
+determinazione di \emph{che cosa} si può garantire, di \emph{quanto} si può guadagnare
+abbandonando la garanzia, e del \emph{meccanismo} che decide quale dei due regimi si applichi a un
+dataset dato. In un ambito in cui la letteratura presenta prevalentemente risultati positivi su
+configurazioni favorevoli, la determinazione di un limite dimostrabile e la sua quantificazione
+hanno un valore che non dipende dal segno del risultato.

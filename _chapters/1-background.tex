@@ -1,0 +1,289 @@
+\chapter{Background e stato dell'arte}\label{chap:background}
+
+
+\noindent Questo capitolo introduce i concetti su cui poggia il lavoro e li colloca rispetto alla
+letteratura. Il problema affrontato nasce da una proprietà del dato --- l'incompletezza --- e dalla
+possibilità di rimediarvi sfruttando regolarità osservate; il capitolo ricostruisce perciò il
+quadro della qualità dei dati e delle sue dimensioni, la natura dei valori mancanti e i meccanismi
+che li producono, le famiglie di tecniche di imputazione con le ipotesi che ciascuna richiede, le
+dipendenze funzionali rilassate e le misure di similarità che ne definiscono la semantica, la
+riduzione di un insieme di regole nella sua accezione classica, e infine la nozione di
+\emph{semantic pruning} adottata in questo lavoro, con la sua collocazione rispetto alle linee di
+ricerca affini.
+
+% =======================================================================================
+\section{Qualità dei dati e sue dimensioni}\label{sec:dq}
+
+La qualità dei dati non è una proprietà intrinseca del dato ma una relazione fra il dato e l'uso
+che ne viene fatto: un dataset è di qualità sufficiente rispetto a un compito, e la stessa
+raccolta può risultare adeguata per un'analisi descrittiva e inadeguata per una decisione
+operativa. La letteratura organizza questa relazione in \emph{dimensioni}, e la classificazione
+più diffusa, derivata dallo studio delle aspettative degli utilizzatori, comprende accuratezza,
+completezza, consistenza, tempestività e unicità \cite{wang1996beyond}. Le dimensioni non sono
+indipendenti --- un dataset completo ma inconsistente è di uso difficile quanto uno accurato ma
+incompleto --- e la loro rilevanza dipende dal compito.
+
+\begin{table}[htbp]
+\centering
+\caption{Dimensioni della qualità dei dati rilevanti per il lavoro. Per ciascuna sono indicati il
+difetto corrispondente e il rapporto con il problema affrontato.}
+\label{tab:dq-dimensions}
+\footnotesize
+\begin{tabular}{@{}lp{3.6cm}p{4.6cm}@{}}
+\toprule
+dimensione & difetto corrispondente & rapporto con questo lavoro \\
+\midrule
+completezza & valori assenti in celle che dovrebbero essere valorizzate & è la dimensione di
+partenza: l'imputazione esiste per rimediare alla sua violazione \\
+accuratezza & valore presente ma diverso da quello corretto & è la dimensione che l'imputazione
+può migliorare o peggiorare, ed è misurata dal ground truth delle configurazioni remodulate \\
+consistenza & violazione di un vincolo fra attributi & è la proprietà che le RFD esprimono in
+forma rilassata, e che il sistema usa per rifiutare le imputazioni incoerenti \\
+ridondanza & informazione duplicata o non necessaria & è la dimensione su cui agisce la potatura:
+un insieme di regole ridondante è un costo senza contropartita informativa \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Formalmente, la completezza di un dataset $D$ con schema $\mathcal{A} = \{A_1, \dots, A_m\}$ si
+misura come la frazione di celle valorizzate sull'insieme delle celle attese,
+$\mathrm{comp}(D) = 1 - |\{(t, A_i) : t[A_i] = \bot\}| \,/\, (|D| \cdot m)$; la sua violazione è
+un \emph{valore mancante}, che è l'oggetto della sezione seguente. Nel lavoro la completezza è la
+dimensione di partenza --- il sistema studiato esiste per rimediare alla sua violazione --- mentre
+l'accuratezza è la dimensione lungo la quale si misura se il rimedio migliora o peggiora il dato.
+La ridondanza dei metadati, che non compare nelle classificazioni classiche perché riguarda il
+processo di arricchimento e non il dato, è il bersaglio della potatura ed è trattata nella
+\autoref{sec:rule-reduction}.
+
+Il quadro complessivo è quello dei sistemi di data quality, in cui l'imputazione è una delle
+attività di miglioramento e va valutata insieme ai costi che introduce \cite{batini2016data}. È
+questa duplice natura --- miglioramento del dato e costo di elaborazione --- a rendere sensato
+chiedersi se una parte dell'informazione impiegata sia superflua.
+
+% =======================================================================================
+\section{Valori mancanti}\label{sec:missing}
+
+Un valore mancante non è un valore: è l'assenza di un'informazione. La distinzione classica
+riguarda il \emph{meccanismo} che lo ha prodotto, poiché da esso dipende la legittimità di
+qualunque tecnica di ricostruzione \cite{rubin1976inference}.
+
+\begin{definition}[Meccanismi di mancanza]
+Sia $X$ una variabile e $M$ l'indicatore della sua mancanza. Si distinguono:
+\begin{itemize}[leftmargin=1.4em]
+    \item \textbf{MCAR} (\emph{Missing Completely At Random}): $M$ è indipendente da $X$ e da
+    ogni altra variabile osservata;
+    \item \textbf{MAR} (\emph{Missing At Random}): $M$ può dipendere dalle variabili osservate,
+    ma non dal valore mancante $X$;
+    \item \textbf{MNAR} (\emph{Missing Not At Random}): $M$ dipende dal valore mancante stesso.
+\end{itemize}
+\end{definition}
+
+La distinzione ha una conseguenza pratica diretta: solo sotto MCAR e MAR la distribuzione dei
+dati osservati è informativa rispetto al valore mancante, e solo in quei regimi un metodo di
+imputazione basato sulle correlazioni osservate può essere corretto in senso statistico
+\cite{little2019statistical}. Sotto MNAR la ricostruzione richiede di modellare il meccanismo di
+mancanza, e un metodo che non lo faccia produce stime distorte in modo non controllabile dai dati
+disponibili.
+
+Nel contesto di questo lavoro la distinzione ha un ruolo operativo preciso. I dataset impiegati
+sono \emph{remodulati}: i valori mancanti sono introdotti artificialmente a partire da un dataset
+completo, e il valore originale è conservato come ground truth. Il meccanismo è quindi, per
+costruzione, noto e controllato. Va però osservato che la rimozione artificiale è progettata per
+essere casuale, e ricade pertanto nel caso MCAR: i risultati del lavoro valgono per questo regime,
+e non si estendono automaticamente a mancanze strutturali, in cui l'assenza di un valore è essa
+stessa un'informazione --- come accade quando un attributo non è applicabile a una parte delle
+tuple.
+
+% =======================================================================================
+\section{Data imputation}\label{sec:imputation}
+
+L'imputazione consiste nel sostituire un valore mancante con una stima ottenuta dal resto
+dell'informazione disponibile. Le famiglie di tecniche si distinguono per la natura
+dell'informazione sfruttata e per le ipotesi che devono valere perché la stima sia sensata.
+
+\begin{table}[htbp]
+\centering
+\caption{Famiglie di tecniche di imputazione. Per ciascuna sono indicati l'informazione
+impiegata, l'ipotesi richiesta e il comportamento rispetto alla copertura.}
+\label{tab:imputation-families}
+\footnotesize
+\begin{tabular}{@{}lp{2.6cm}p{3.2cm}p{2.5cm}@{}}
+\toprule
+famiglia & informazione impiegata & ipotesi & copertura \\
+\midrule
+statistica & distribuzione marginale o congiunta di una variabile & il modello globale è corretto;
+sotto MAR, stima non distorta & totale: un valore viene sempre prodotto \\
+apprendimento automatico & relazioni fra attributi apprese dai dati osservati & i dati mancanti
+seguono il medesimo processo dei dati osservati & totale \\
+similarità & somiglianza fra tuple (\emph{k}-NN) & tuple vicine hanno valori simili & totale o
+quasi, secondo la soglia adottata \\
+vincoli & dipendenze fra attributi, espresse come regole & il vincolo è valido sul dato reale &
+\emph{parziale}: l'imputazione può essere rifiutata \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+I metodi statistici classici --- media, mediana, moda, regressione --- sono semplici e veloci e
+assumono una struttura globale che raramente sussiste; l'imputazione multipla per equazioni
+concatenate ne rappresenta la versione moderna e condizionata, in cui ogni variabile è stimata a
+partire dalle altre in modo iterativo \cite{vanbuuren2011mice}. I metodi di apprendimento
+automatico, come le foreste casuali applicate all'imputazione di dati misti, rinunciano a
+un'assunzione distributiva e catturano relazioni non lineari, al prezzo di un costo di
+addestramento e di una minore interpretabilità \cite{stekhoven2012missforest}. I metodi basati su
+similarità copiano il valore da tuple ritenute vicine, con la scelta della metrica e del numero di
+vicini come parametri critici \cite{troyanskaya2001missing}. I metodi basati su vincoli
+impiegano dipendenze fra attributi --- funzionali, di inclusione, di ordine --- e possono essere
+formulati come un problema di riparazione che massimizza la coerenza complessiva
+\cite{rekatsinas2017holoclean, fan2012foundations}; è la famiglia a cui appartiene \renuver{}.
+
+La scelta della famiglia non è neutrale rispetto alla valutazione. Un metodo statistico produce
+sempre un valore: la sua copertura è per definizione totale, e la sua qualità si misura
+sull'accuratezza. Un metodo basato su vincoli può invece \emph{rifiutare} di imputare, quando
+nessun candidato soddisfa i vincoli: in quel caso la copertura è una metrica tanto rilevante
+quanto l'accuratezza, e le due vanno lette insieme. Questa osservazione è alla base delle metriche
+adottate nel \autoref{chap:experiments}, ed è anche la ragione per cui una modifica dell'insieme
+di vincoli --- come la potatura studiata in questo lavoro --- può cambiare il risultato in due
+direzioni opposte, migliorando la qualità delle imputazioni prodotte e riducendo il numero di
+celle che ricevono un valore.
+
+% =======================================================================================
+\section{Relaxed Functional Dependencies}\label{sec:rfd}
+
+Una dipendenza funzionale (FD) classica asserisce che due tuple concordanti su un insieme di
+attributi $X$ concordano necessariamente su un attributo $A$. Su dati reali l'asserzione è troppo
+rigida: il rumore e le eccezioni la falsificano quasi ovunque. Le dipendenze funzionali
+\emph{rilassate} introducono forme di tolleranza, tipicamente sulle soglie di confronto e sulle
+eccezioni ammesse \cite{caruccio2016rfd}.
+
+\begin{definition}[Relaxed Functional Dependency]\label{def:rfd}
+Una RFD è un'espressione della forma
+\[
+    (A_1 \le \theta_1,\ \dots,\ A_k \le \theta_k) \;\rightarrow\; (A_{\RHS} \le \theta_{\RHS})
+\]
+dove gli $A_i$ sono attributi del dataset, $\theta_i \ge 0$ sono soglie di tolleranza e
+$A_{\RHS}$ è l'attributo di destra. La parte sinistra è detta \LHS{}, la destra \RHS{}.
+\end{definition}
+
+La semantica della tolleranza dipende dal tipo dell'attributo: per un attributo numerico
+$A_i \le \theta_i$ significa che due tuple possono differire di al più $\theta_i$ su $A_i$; per un
+attributo categorico significa che i valori devono coincidere, oppure che la loro distanza di
+stringa non supera $\theta_i$. La distinzione è rilevante nel seguito, poiché il sistema studiato
+tratta i due casi con procedure diverse.
+
+Due osservazioni sono necessarie per la lettura del lavoro.
+
+\begin{observation}[Ruolo doppio]\label{obs:dual}
+Una RFD non è soltanto un descrittore del dataset: è un \emph{oggetto operativo}. Nel sistema
+studiato essa partecipa a due procedure distinte, la generazione di candidati per una cella nulla
+e la verifica di coerenza di un'imputazione. Le due procedure hanno requisiti opposti rispetto
+alla tolleranza: una soglia larga rende la regola permissiva nella generazione e severa nella
+verifica. Questo doppio ruolo è il vincolo che determina l'intero problema affrontato
+(\autoref{sec:dual-role}).
+\end{observation}
+
+\begin{observation}[Soglia nulla]
+Il caso $\theta_{\RHS} = 0$ merita attenzione separata. Una RFD con soglia di destra nulla
+richiede coincidenza esatta sull'attributo di destra, ed è quella che il sistema tratta con una
+scorciatoia dedicata. Nel seguito la distinzione fra regole a soglia nulla e regole a soglia
+positiva ricorrerà come variabile esplicativa.
+\end{observation}
+
+% =======================================================================================
+\section{Ridondanza e riduzione di un insieme di regole}\label{sec:rule-reduction}
+
+L'insieme delle RFD estratte da un dataset è, come ogni insieme di dipendenze, ridondante: alcune
+regole sono implicati da altre, e la loro presenza non aggiunge informazione sui vincoli del dato.
+La teoria classica delle dipendenze funzionali affronta il problema con la nozione di
+\emph{copertura}: due insiemi di dipendenze sono equivalenti se hanno la stessa chiusura, e un
+insieme è \emph{minimale} se nessuna delle sue dipendenze è derivabile dalle altre per mezzo degli
+assiomi di Armstrong \cite{armstrong1974dependency, maier1983theory}. Il calcolo di una copertura
+minimale è un'operazione standard, e la sua applicazione alle RFD è stata studiata come forma di
+semplificazione degli insiemi di regole.
+
+Questa letteratura fornisce il termine di paragone naturale del lavoro, ed è importante
+chiarire perché non lo risolve. La nozione classica di ridondanza è \emph{dichiarativa}: una
+dipendenza è superflua se la sua rimozione non cambia l'insieme dei vincoli soddisfatti. Nel
+sistema studiato il ruolo di una regola è invece \emph{operativo}, e dipende da come il programma
+la consuma: una regola partecipa alla generazione di un valore e alla verifica di coerenza, e la
+scorciatoia per le regole a soglia di destra nulla mostra che due regole equivalenti dal punto di
+vista logico possono avere costi ed effetti diversi. Ne segue che la ridondanza classica non
+implica la sicurezza della rimozione, e che il problema studiato non è un caso particolare del
+calcolo di una copertura minimale.
+
+Il \autoref{chap:theory} formalizza questa distinzione. La conseguenza per la valutazione
+sperimentale è che il termine di paragone del lavoro non è una copertura minimale --- che non
+garantirebbe l'equivalenza del comportamento --- ma l'\emph{equivalenza osservata} del sistema
+prima e dopo la potatura, misurata per confronto degli output. La scelta è più onerosa e più
+debole sul piano teorico, ma è l'unica che risponda alla domanda posta: se una regola possa essere
+rimossa senza che il sistema se ne accorga.
+
+% =======================================================================================
+\section{Misure di similarità e distanza}\label{sec:similarity}
+
+Il confronto fra tuple avviene attributo per attributo, e il risultato complessivo è una
+aggregazione dei confronti elementari. Nel sistema studiato l'aggregazione è una media dei
+contributi normalizzati sull'ampiezza del lato sinistro della regola. La normalizzazione ha
+conseguenze non ovvie: a parità di scostamento assoluto, un contributo è tanto minore quanto più
+grande è la soglia di tolleranza dell'attributo, sicché attributi con scale diverse non sono
+confrontabili direttamente.
+
+Per gli attributi numerici il confronto elementare è la differenza assoluta, eventualmente
+normalizzata sull'intervallo dei valori osservati. Per gli attributi testuali si impiegano misure
+di edit distance, fra cui la distanza di Levenshtein, che conta il numero minimo di inserimenti,
+cancellazioni e sostituzioni necessari a trasformare una stringa nell'altra
+\cite{levenshtein1966binary}; la sua versione normalizzata sulla lunghezza della stringa è
+impiegata per rendere confrontabili valori di lunghezza diversa, ed è quella adottata per la
+famiglia Physician, i cui attributi testuali designano la stessa entità con forme diverse. Anche
+in questo caso la soglia di tolleranza della regola agisce da parametro di accettazione.
+
+La scelta della misura non è neutrale, come mostra il difetto D1 discusso nella
+\autoref{sec:d1}: nel sistema studiato l'attributo categorico non riceve la misura prevista, e il
+confronto ricade su una distanza di stringa applicata a etichette lunghe e prive di relazione. La
+circostanza è rilevante per l'interpretazione dei risultati, perché rende il comportamento del
+sistema dipendente da una misura che non è quella dichiarata.
+
+% =======================================================================================
+\section{Semantic pruning: definizione operativa e collocazione}\label{sec:semantic-pruning}
+
+Con \emph{semantic pruning} si intende, in questo lavoro, la selezione di un sottoinsieme di un
+insieme di metadati --- nel caso in esame, le RFD --- guidata dal \emph{significato} che quei
+metadati hanno per il sistema che li consuma, e non da criteri sintattici o statistici sul file.
+
+La distinzione è sostanziale. Un criterio sintattico rimuove regole in base alla loro forma
+(duplicati, dimensione del lato sinistro, valore delle soglie); un criterio statistico le rimuove
+in base alla loro frequenza o alla loro resa osservata. Un criterio semantico richiede invece di
+sapere \emph{che cosa il sistema fa} con ciascuna regola, e quindi di derivare le condizioni di
+rimozione dal comportamento effettivo del codice. La qualificazione ``semantico'' non è quindi un
+sinonimo di ``euristico'': indica la fonte dell'informazione impiegata, che è la semantica
+operativa del consumatore dei metadati e non una proprietà statistica del file.
+
+\begin{definition}[Potatura sicura]\label{def:safe-pruning}
+Sia $\mathcal{R}$ un insieme di regole e $\Pi$ il programma che le consuma. Una rimozione
+$r \in \mathcal{R}$ è \emph{sicura rispetto a una proprietà $P$} se il comportamento di $\Pi$
+rispetto a $P$ è invariato quando $r$ è assente.
+\end{definition}
+
+La definizione è parametrica rispetto a $P$, e la scelta di $P$ è il nodo del problema. Nel
+sistema studiato si possono isolare almeno due proprietà candidate --- la capacità di generare
+candidati e il potere di veto --- e si dimostrerà che esse non sono simultaneamente preservabili
+oltre una soglia quantificata (\autoref{sec:negative-theorem}).
+
+Questa impostazione distingue il lavoro da tre alternative presenti in letteratura. La prima è la
+potatura \emph{a posteriori}, che misura l'effetto di ogni rimozione eseguendo il sistema:
+corretta ma computazionalmente proibitiva, poiché richiede una esecuzione per candidato. La
+seconda è la potatura basata su un \emph{proxy} offline, che stima la rilevanza di una regola con
+una grandezza calcolata sul dataset: economica, ma --- come si mostrerà nel \autoref{chap:results}
+--- potenzialmente fuorviante, al punto da risultare \emph{anti-correlata} con la rilevanza
+effettiva. La terza è la selezione guidata dalla semantica \emph{dei nomi} dei metadati, che
+impiega modelli linguistici per inferire relazioni fra colonne a partire dalla loro
+denominazione \cite{trummer2024llmcorrelations} o per guidare l'esplorazione di fonti dati
+eterogenee \cite{freire2024llmdiscovery}: si tratta di una linea di ricerca affine per ambizione
+--- impiegare il significato invece della forma --- ma distinta per oggetto, perché riguarda
+l'\emph{interpretazione} dei metadati e non la loro \emph{selezione} rispetto al consumo da parte
+di un algoritmo noto.
+
+La metodologia adottata cerca una quarta via, intermedia fra le precedenti: derivare dal codice
+condizioni \emph{sufficienti}, verificabili offline, la cui validità non dipende da una stima. È
+questa la scelta che rende il risultato negativo del \autoref{chap:theory} possibile e
+significativo: poiché le condizioni non sono euristiche, il loro limite è un limite del problema e
+non dell'implementazione.

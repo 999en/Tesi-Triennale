@@ -1,0 +1,35 @@
+%double quote command
+\newcommand\dquote[1]{``#1''}
+\newcommand\dquoteit[1]{``\emph{#1}''}
+
+%single quote command
+\newcommand\squote[1]{`#1'}
+
+% Segno di percentuale fuori da \SI (siunitx non lo definisce da solo)
+\providecommand{\percent}{\%}
+
+% =======================================================================================
+% Macro per la notazione del lavoro.
+% =======================================================================================
+
+% RFD, LHS, RHS
+\newcommand{\rfd}{\ensuremath{\mathit{rfd}}}
+\newcommand{\LHS}{\ensuremath{\mathrm{LHS}}}
+\newcommand{\RHS}{\ensuremath{\mathrm{RHS}}}
+\newcommand{\NullCols}{\ensuremath{\mathrm{NullCols}}}
+\newcommand{\thr}{\ensuremath{\theta}}
+
+% Le tre condizioni derivate dal bytecode
+\newcommand{\Vone}{\ensuremath{[\mathrm{V1}]}}
+\newcommand{\Vtwo}{\ensuremath{[\mathrm{V2}]}}
+\newcommand{\Vthree}{\ensuremath{[\mathrm{V3}]}}
+
+% Strategie citate nel testo: monospazio per restare coerenti con il codice
+\newcommand{\str}[1]{\texttt{#1}}
+
+% Termini tecnici ricorrenti
+\newcommand{\renuver}{\textsc{Renuver}}
+\newcommand{\jar}{\texttt{RENUVER\_EDBT.jar}}
+
+% Tabelle: intestazione compatta
+\newcommand{\hd}[1]{\textbf{#1}}

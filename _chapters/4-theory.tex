@@ -1,0 +1,254 @@
+\chapter{Teoria: che cosa si può potare con garanzia}\label{chap:theory}
+
+
+\noindent Questo capitolo formula e dimostra il risultato negativo che delimita il campo di
+applicabilità della potatura esterna. Dopo aver fissato che cosa si intende per comportamento del
+sistema, per attivabilità di una regola e per rimozione certificata --- e dopo aver illustrato le
+definizioni su un caso minimo --- il capitolo enuncia il teorema e lo dimostra, ne trae la
+conseguenza sul target di riduzione separando ciò che è dimostrato da ciò che è misurato, mostra
+che la classe certificata non è vuota e che il limite non dipende dal parametro di ricerca dei
+copritori, e ne precisa infine la portata, indicando che cosa resta fuori dal risultato.
+
+% =======================================================================================
+\section{Impostazione formale}\label{sec:theory-setup}
+
+\begin{definition}[Sistema e comportamento]\label{def:behaviour}
+Sia $D$ un dataset con schema $\mathcal{A}$ e sia $R$ un insieme finito di RFD. Si indica con
+$B(R, D)$ il \emph{comportamento} del sistema su $D$ con l'insieme di regole $R$: l'insieme delle
+celle valorizzate e i valori loro assegnati. Due insiemi di regole $R$ e $R'$ sono
+\emph{equivalenti} su $D$ se $B(R, D) = B(R', D)$.
+\end{definition}
+
+Il comportamento è l'osservabile del sistema: nella notazione dell'implementazione corrisponde ai
+file di output delle celle popolate e dei risultati. La nozione di equivalenza è quella che gli
+esperimenti del \autoref{chap:results} verificano per confronto di impronte.
+
+\begin{definition}[Attivabilità di una regola]\label{def:activability}
+Sia $\NullCols(D)$ l'insieme delle colonne di $D$ che presentano almeno una cella nulla. Una RFD
+$r$ è \emph{attivabile in veto} su $D$ se $\LHS(r) \cap \NullCols(D) \neq \emptyset$; è
+\emph{attivabile in generazione} su $D$ se $\RHS(r) \in \NullCols(D)$.
+\end{definition}
+
+Le due condizioni sono di natura diversa. La prima è necessaria e sufficiente, ed è la condizione
+\Vone{} della \autoref{sec:exact-conditions}: la verifica di coerenza confronta valori, e il
+confronto richiede che entrambi siano presenti. La seconda è necessaria ma non sufficiente: perché
+una regola generi un candidato occorre anche che esista, nella colonna di destra, un cluster con
+cui confrontare la tupla incompleta. Ai fini del teorema è però la sola necessità che serve,
+perché è la possibilità di attivazione a escludere la certificabilità.
+
+\begin{definition}[Potatura esterna]\label{def:external-pruning}
+Una \emph{strategia di potatura esterna} è una funzione $\Pi$ che, applicata a una coppia
+$(R, D)$, produce un insieme $\Pi(R, D) \subseteq R$ usando esclusivamente il file delle regole,
+lo schema di $D$ e il profilo delle colonne nulle $\NullCols(D)$. In particolare $\Pi$ non accede
+al comportamento del sistema né può osservare quali regole siano attivate in esecuzione.
+\end{definition}
+
+La restrizione è quella imposta dal \autoref{chap:methodology}: la potatura riscrive il file e non
+modifica l'eseguibile. È una restrizione reale, non una comodità dimostrativa: è ciò che rende la
+metodologia applicabile a un sistema distribuito senza sorgenti.
+
+\begin{definition}[Rimozione certificata]\label{def:certified}
+Una rimozione $r \in R \setminus \Pi(R, D)$ è \emph{certificata} se esiste una condizione $\Phi$,
+decidibile con l'informazione ammessa dalla Definizione~\ref{def:external-pruning}, tale che per
+ogni dataset $D'$ con lo schema e il profilo delle colonne nulle di $D$ valga
+\[
+    \Phi(r, R, D) \;\Longrightarrow\; \text{$r$ non è attivabile in alcuno dei due ruoli su $D'$,}
+\]
+oppure
+\[
+    \Phi(r, R, D) \;\Longrightarrow\; \text{il veto di $r$ su $D'$ è implicato da una regola di
+    $\Pi(R, D)$.}
+\]
+Una strategia è certificata se tutte le sue rimozioni lo sono.
+\end{definition}
+
+La definizione merita una precisazione. La certificazione non è richiesta rispetto al solo dataset
+in esame, ma rispetto a ogni dataset che con esso condivide schema e profilo di valori mancanti: è
+questa quantificazione a dare forza al risultato, ed è anche la ragione per cui la potatura
+esterna non può giovarsi di circostanze accidentali. Una regola la cui rimozione non altera il
+comportamento \emph{su questo} dataset può benissimo alterarlo su un altro con lo stesso profilo di
+nullità, e una strategia che operi senza eseguire il sistema non ha modo di distinguere i due
+casi. La \autoref{sec:target-impossible} mostra che la distinzione è verificabile a posteriori, e
+che le rimozioni osservate come innocue ricadono comunque nelle classi certificate.
+
+% =======================================================================================
+% =======================================================================================
+\section{Un esempio minimo}\label{sec:theory-example}
+
+Le tre condizioni si leggono meglio su un caso concreto. Si consideri uno schema con tre
+attributi $A$, $B$, $C$, un profilo di valori mancanti $\NullCols = \{A, C\}$ e quattro regole; la
+\autoref{tab:theory-example} le classifica.
+
+\begin{table}[htbp]
+\centering
+\caption{Esempio minimo di classificazione delle regole. La tabella è illustrativa: serve a
+rendere leggibili le definizioni della sezione precedente, non riporta misure.}
+\label{tab:theory-example}
+\footnotesize
+\begin{tabular}{@{}llll@{}}
+\toprule
+regola & espressione & classe & rimozione certificabile \\
+\midrule
+$r_2$ & $(A \le 3) \to (C \le 0)$ & né inerte né coperta; è la copritrice di $r_1$ & no: è la regola che copre \\
+$r_1$ & $(A \le 1) \to (C \le 0)$ & \Vtwo{}: coperta da $r_2$ & sì, purché $r_2$ sopravviva \\
+$r_3$ & $(B \le 1) \to (C \le 0)$ & né inerte né coperta & no: può generare candidati \\
+$r_4$ & $(B \le 1) \to (B \le 0)$ & \Vthree{}: inerte & sì, per costruzione \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Tre aspetti dell'esempio meritano di essere evidenziati, perché sono quelli che rendono la
+condizione \Vtwo{} controintuitiva. Il primo è la direzione delle soglie: $r_2$ copre $r_1$ pur
+essendo \emph{più permissiva} a sinistra ($3$ contro $1$) e non più debole a destra (la soglia di
+destra è la stessa); nella nozione classica di dominanza fra dipendenze si richiederebbe l'opposto.
+Il secondo è che $r_1$ è rimovibile solo \emph{finché} $r_2$ sopravvive: la condizione si valuta
+sull'insieme corrente delle regole, non su quello di partenza, ed è la precisazione che il
+\autoref{sec:d5} ha reso necessaria. Il terzo è che $r_3$ --- che pure ha un lato sinistro senza
+valori mancanti, e quindi non può esercitare alcun veto --- \emph{non} è rimovibile senza
+rinunciare alla garanzia, perché la sua colonna di destra contiene celle nulle e la regola può
+quindi generare candidati: è l'asimmetria fra i due ruoli che il teorema generale formalizza.
+
+\section{Il teorema negativo}\label{sec:negative-theorem}
+
+\begin{theorem}[Limite della potatura esterna certificata]\label{thm:negative}
+Siano $D$ un dataset, $R$ un insieme di RFD e $\Pi$ una strategia di potatura esterna in possesso
+della certificazione della Definizione~\ref{def:certified}. Allora ogni regola
+$r \in R \setminus \Pi(R, D)$ è provabilmente inerte secondo la condizione \Vthree{}, oppure il
+suo veto è implicato da una regola sopravvissuta.
+\end{theorem}
+
+Il teorema non afferma che le regole fuori da queste due classi non possano essere rimosse senza
+effetti: afferma che la loro rimozione non può essere \emph{certificata} con l'informazione
+disponibile a una strategia esterna. La distinzione fra le due affermazioni è il contenuto
+dell'ultima sezione del capitolo.
+
+% =======================================================================================
+\section{Dimostrazione}\label{sec:theory-proof}
+
+\begin{proof}
+Sia $r \in R \setminus \Pi(R, D)$ una regola rimossa, e si supponga che $r$ non sia inerte secondo
+la Definizione~\ref{def:v3}, cioè che valga
+\[
+    \LHS(r) \cap \NullCols(D) \neq \emptyset \quad \vee \quad \RHS(r) \in \NullCols(D).
+\]
+Si distinguono i due casi.
+
+\emph{Primo caso: $\RHS(r) \in \NullCols(D)$.} Per la Definizione~\ref{def:activability} la regola
+è attivabile in generazione: esiste almeno una cella nulla nella colonna di destra, e la regola
+partecipa quindi all'insieme dei candidati per quella cella. Il valore che il sistema scrive
+dipende dall'argomento del minimo fra i candidati del cluster, e l'argomento del minimo dipende
+dall'insieme delle regole presenti (\autoref{sec:generation-limit}); nessuna proprietà della
+singola regola $r$, decidibile dal file, determina se la sua presenza cambi l'esito. La condizione
+$\Phi$ non può quindi stabilire la prima delle due alternative della
+Definizione~\ref{def:certified}.
+
+\emph{Secondo caso: $\LHS(r) \cap \NullCols(D) \neq \emptyset$.} Per la condizione \Vone{}, che è
+necessaria e sufficiente, la regola è attivabile in veto: esistono un dataset $D'$ con lo schema e
+il profilo di nullità di $D$ e una coppia di tuple su cui la verifica di coerenza di $r$ viene
+eseguita e fallisce. Se $r$ non ricade nel primo caso, la prima alternativa della
+Definizione~\ref{def:certified} è esclusa anche qui, e la certificazione può venire soltanto dalla
+seconda: il veto di $r$ deve essere implicato da una regola che sopravvive alla potatura.
+
+Dunque ogni rimozione certificata è una regola inerte oppure una regola il cui veto è implicato da
+una regola sopravvissuta.
+\end{proof}
+
+La dimostrazione poggia su due fatti stabiliti altrove: l'esattezza della condizione \Vone{}, che
+discende dalla semantica del confronto fra valori, e la dipendenza della generazione
+dall'argomento del minimo, che discende dall'analisi delle due procedure di riempimento. Il primo
+è un fatto logico; il secondo è una proprietà dell'algoritmo, verificata sul codice e confermata
+dal fatto, misurato nella \autoref{sec:res-vetocover}, che le strategie di rimozione che non
+tutelano la generazione producono output diversi.
+
+% =======================================================================================
+\section{Conseguenza sul target di riduzione}\label{sec:target-impossible}
+
+Il teorema si traduce in un vincolo quantitativo solo una volta stabilito quali regole, fra quelle
+certificabili, siano \emph{riconosciute} come tali dalla metodologia. La condizione \Vtwo{} è una
+condizione \emph{sufficiente} di copertura del veto: quando è soddisfatta, la regola è eliminabile
+con garanzia. Non è detto che sia l'unica condizione sufficiente possibile, ed è opportuno
+distinguere le due affermazioni.
+
+\begin{corollary}[Incompatibilità del target]\label{cor:target}
+Se la copertura del veto è decisa mediante la condizione \Vtwo{}, allora la riduzione ottenibile
+da una potatura esterna certificata è limitata dalla dimensione dell'unione delle classi \Vtwo{} e
+\Vthree{}.
+\end{corollary}
+
+\paragraph{La classe certificata non è vuota.} Un teorema di impossibilità va difeso dalla prima
+obiezione che riceve, cioè che la classe su cui il risultato morde sia vuota. Non lo è: sui dataset
+esaminati la condizione \Vthree{} individua poche regole --- \num{6} su Bridges a soglia 9 --- ma la
+condizione \Vtwo{} ne individua \num{1531}, pari al \SI{17.2}{\percent} dell'insieme
+(\autoref{tab:conditions}), e la riduzione ottenibile cresce con la soglia fino al
+\SI{20.9}{\percent}. La condizione è inoltre \emph{decidibile} senza eseguire il sistema: la ricerca
+dei copritori della \autoref{alg:cover} esamina al più tutte le coppie di regole con la stessa
+colonna di destra, ed è quindi di ordine quadratico nella dimensione del file, con il parametro
+$\mu$ a limitare il numero di candidati esaminati per ciascuna regola.
+
+La \autoref{tab:conditions} fornisce la misura di quell'unione sui dataset impiegati: essa vale
+dall'\SI{0.0}{\percent} al \SI{20.9}{\percent}, con il massimo raggiunto da Bridges alla soglia più
+alta. Ne segue che un obiettivo di riduzione pari o superiore al \SI{50}{\percent} è incompatibile
+con la garanzia, e che l'incompatibilità non dipende dalla strategia adottata ma dalla struttura
+delle classi. La precisazione è necessaria perché il corollario è una proposizione \emph{misurata}
+e non un teorema: la limitazione è dimostrata, la sua entità numerica è osservata su otto casi, e
+nulla esclude che su altri dataset la classe \Vtwo{} sia più ampia. Ciò che il teorema esclude è
+che una via diversa dalla copertura del veto possa essere percorsa \emph{con garanzia}; ciò che
+resta aperto è quanto la copertura del veto possa valere su dati diversi da quelli esaminati.
+
+% =======================================================================================
+\section{Quanto è stretto il limite}\label{sec:maxextra}
+
+La ricerca delle regole coprenti impiega un parametro che limita la differenza di ampiezza fra il
+lato sinistro della regola coprente e quello della regola coperta. Il parametro è una scelta di
+ricerca, non una condizione di correttezza: la \autoref{prop:v2} vale per qualunque valore. Si è
+quindi verificato se il tetto di riduzione osservato fosse un artefatto del valore adottato. Lo
+sweep completo --- valori da 3 a 20, su otto casi --- mostra che la riduzione è \emph{piatta}: su
+\num{8939} rimozioni complessive, allargare la ricerca al massimo ne aggiunge \emph{una}. Il limite
+è pertanto intrinseco al criterio, e il teorema negativo non è aggirabile per questa via. La
+verifica è condotta da \texttt{pruning/verify\_veto\_sweep.py}, i cui risultati sono raccolti in
+\texttt{results/results\_maxextra\_bridges15.json}.
+
+% =======================================================================================
+\section{Portata del risultato}\label{sec:theory-scope}
+
+Tre restrizioni delimitano il teorema, e conviene dichiararle esplicitamente perché ciascuna
+indica una direzione di lavoro.
+
+\paragraph{Solo rimozione.} La Definizione~\ref{def:external-pruning} considera trasformazioni che
+producono un sottoinsieme del file di partenza. Una trasformazione che \emph{riscriva} le regole
+--- restringendo o allargando i lati sinistri, modificando le soglie, fondendo più regole in una
+--- non è coperta dal risultato, e non è detto che vi ricada: la condizione \Vtwo{} mostra del
+resto che una regola può essere eliminata quando il suo contenuto informativo è conservato da
+un'altra, e nulla vieta di cercare la stessa conservazione per via sintattica anziché per
+soppressione. È, questa, la direzione di sviluppo più promettente indicata nelle
+\autoref{sec:future-work}.
+
+\paragraph{Solo informazione esterna.} La certificazione richiesta è quella ottenibile dal file,
+dallo schema e dal profilo dei valori mancanti. Una strategia che eseguisse il sistema, o che
+disponesse di una sua descrizione simbolica, potrebbe in linea di principio certificare rimozioni
+ulteriori: è il caso di \str{score-argmin}, che calcola staticamente l'argomento del minimo sul
+dataset e preserva la generazione, ma non il veto, e resta quindi fuori dalla classe garantita
+(\autoref{sec:score-argmin}).
+
+\paragraph{Completezza della condizione di copertura.} Il teorema caratterizza le rimozioni
+certificabili, non le rimozioni innocue. Stabilire se la condizione \Vtwo{} esaurisca le regole il
+cui veto è implicato da un'altra regola è un problema aperto, e la sua soluzione non cambierebbe
+la natura del risultato ma potrebbe ampliarne la portata quantitativa. La
+\autoref{sec:res-vetocover} fornisce, su questo punto, un'evidenza indiretta: le rimozioni
+effettivamente osservate come innocue ricadono tutte nelle classi certificate, e la copertura
+verificata a posteriori coincide con quella prevista.
+
+\paragraph{La riduzione interna del sistema.} La certificazione è definita rispetto all'insieme
+delle regole contenute nel file, ma il sistema ne consuma un sottoinsieme determinato da un
+criterio \emph{proprio}: all'avvio esso rimuove le regole a soglia di destra nulla il cui lato
+sinistro si comporta come una chiave e le destina a una procedura distinta
+(\autoref{sec:dual-role}). Due osservazioni ne seguono. La prima è che questa riduzione interna
+non è modellata dal teorema: le classi \Vtwo{} e \Vthree{} sono calcolate sul file, e nulla
+garantisce che una regola coprente sopravviva alla riduzione interna. La seconda è che la
+garanzia resta comunque valida sui dati esaminati, perché la proprietà di chiave implica che il
+veto della regola coprente e quello della regola coperta siano entrambi non esercitabili: se il
+lato sinistro della coprente è una chiave, ogni suo soprainsieme --- e quindi anche il lato
+sinistro della coperta --- lo è, e nessuna coppia di tuple distinte può attivare la verifica. La
+riduzione interna non può dunque sottrarre un veto che il teorema presume implicato; resta il
+fatto che il modello formale non la rappresenta, e che una sua inclusione renderebbe
+l'enunciato più generale.
